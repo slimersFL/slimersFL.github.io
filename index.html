@@ -413,128 +413,6 @@
 
   /* MUSIC */
   .music { background: var(--darker); }
-  .music-grid {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: start;
-  }
-  .album-card {
-    background: var(--gray);
-    border: 1px solid rgba(57,255,20,0.3);
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-  }
-  .album-card:hover { border-color: var(--slime); box-shadow: 0 0 30px rgba(57,255,20,0.15); }
-  .album-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--slime);
-    box-shadow: 0 0 10px var(--slime);
-  }
-  .album-art {
-    width: 100%;
-    aspect-ratio: 1;
-    background: var(--mid);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    font-size: 100px;
-    border: 1px solid rgba(57,255,20,0.2);
-    position: relative;
-    overflow: hidden;
-  }
-  .album-art-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0; left: 0;
-  }
-  .album-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 40px;
-    color: #fff;
-    letter-spacing: 4px;
-  }
-  .album-year {
-    font-family: 'VT323', monospace;
-    font-size: 20px;
-    color: var(--slime);
-    letter-spacing: 3px;
-    margin-bottom: 20px;
-    display: block;
-  }
-  .tracklist { list-style: none; }
-  .tracklist li {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    font-family: 'Special Elite', cursive;
-    font-size: 15px;
-    color: rgba(255,255,255,0.7);
-    transition: color 0.2s;
-    cursor: default;
-  }
-  .tracklist li:hover { color: var(--slime); }
-  .track-num {
-    font-family: 'VT323', monospace;
-    font-size: 16px;
-    color: rgba(57,255,20,0.5);
-    min-width: 24px;
-  }
-  .track-dur {
-    margin-left: auto;
-    font-family: 'VT323', monospace;
-    font-size: 16px;
-    color: rgba(255,255,255,0.3);
-  }
-  .music-info {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  .info-block {
-    background: var(--gray);
-    border-left: 3px solid var(--slime);
-    padding: 20px 24px;
-  }
-  .info-block h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px;
-    color: var(--slime);
-    letter-spacing: 3px;
-    margin-bottom: 10px;
-  }
-  .info-block p {
-    font-size: 16px;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.7);
-  }
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-  .tag {
-    font-family: 'VT323', monospace;
-    font-size: 16px;
-    letter-spacing: 2px;
-    padding: 4px 12px;
-    border: 1px solid rgba(57,255,20,0.4);
-    color: var(--slime);
-    background: rgba(57,255,20,0.06);
-  }
 
   /* SHOWS */
   .shows { background: var(--gray); }
@@ -618,50 +496,7 @@
   }
   .no-shows span { color: var(--slime); }
 
-  /* LIVE EXPERIENCE */
-  .live { background: var(--darker); }
-  .live-inner { max-width: 1100px; margin: 0 auto; }
-  .live-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 0;
-  }
-  .live-card {
-    background: var(--gray);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-  }
-  .live-card:hover {
-    border-color: rgba(57,255,20,0.4);
-    transform: translateY(-4px);
-  }
-  .live-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--slime), var(--proton-orange), var(--slime));
-    transform: scaleX(0);
-    transition: transform 0.3s;
-  }
-  .live-card:hover::after { transform: scaleX(1); }
-  .live-icon { font-size: 40px; margin-bottom: 16px; display: block; }
-  .live-card h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    color: #fff;
-    letter-spacing: 3px;
-    margin-bottom: 10px;
-  }
-  .live-card p {
-    font-size: 15px;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.6);
-  }
+
 
   /* INSTAGRAM GALLERY */
   .gallery { background: var(--gray); }
@@ -824,30 +659,9 @@
   }
   .marquee-sep { color: var(--darker); opacity: 0.4; }
 
-  /* GHOST FACT BOX */
-  .ghost-fact {
-    max-width: 1100px;
-    margin: 0 auto 0;
-    background: rgba(57,255,20,0.06);
-    border: 1px solid rgba(57,255,20,0.3);
-    padding: 24px 32px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .ghost-fact-icon { font-size: 48px; flex-shrink: 0; animation: shake 3s ease-in-out infinite; }
-  .ghost-fact-text {
-    font-family: 'Special Elite', cursive;
-    font-size: 17px;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.7;
-  }
-  .ghost-fact-text strong { color: var(--slime); }
-
   /* RESPONSIVE */
   @media (max-width: 768px) {
-    .about-grid, .music-grid, .footer-inner { grid-template-columns: 1fr; }
-    .live-grid { grid-template-columns: 1fr; }
+    .about-grid, .footer-inner { grid-template-columns: 1fr; }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); }
     .show-item { grid-template-columns: 60px 1fr; }
     .btn-ticket { grid-column: 1 / -1; justify-self: start; }
@@ -867,8 +681,8 @@
   <ul class="nav-links">
     <li><a href="#about">ABOUT</a></li>
     <li><a href="#music">MUSIC</a></li>
+    <li><a href="#game">PLAY</a></li>
     <li><a href="#shows">SHOWS</a></li>
-    <li><a href="#live">LIVE</a></li>
     <li><a href="#gallery">GALLERY</a></li>
   </ul>
 </nav>
@@ -986,818 +800,1172 @@
     <h2 class="section-title">THE MUSIC</h2>
     <div class="section-divider"></div>
   </div>
-  <div class="music-grid" style="max-width:1100px; margin:0 auto;">
-    <div class="album-card">
-      <div class="album-art">
-        <!-- Album art placeholder — slimer emoji as stand-in for actual cover -->
-        <span style="font-size:120px; z-index:1; position:relative;">🟢</span>
-        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(0,0,0,0.3);">
-          <span style="font-family:'Bebas Neue',sans-serif; font-size:72px; color: var(--slime); opacity:0.9; letter-spacing:4px; z-index:2;">SLIMERS</span>
-        </div>
+
+  <div style="max-width:720px; margin:0 auto;">
+
+    <!-- Album header -->
+    <div style="display:flex; align-items:center; gap:20px; background:#0a140a; border:1px solid rgba(57,255,20,0.35); border-bottom:none; padding:20px 24px;">
+      <div style="width:88px; height:88px; flex-shrink:0; background:#050a05; border:2px solid rgba(57,255,20,0.5); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+        <img src="https://f4.bcbits.com/img/a0319189928_7.jpg" alt="SLIMERS album art"
+          style="width:100%; height:100%; object-fit:cover;"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span style="display:none; font-size:36px;">👻</span>
       </div>
-      <h3 class="album-title">SLIMERS</h3>
-      <span class="album-year">DEC 2025 · FULL ALBUM</span>
-      <ul class="tracklist">
-        <li><span class="track-num">01</span> I'm a Slimer (Part 1) <span class="track-dur">1:31</span></li>
-        <li><span class="track-num">02</span> down low TOO S L O W <span class="track-dur">1:38</span></li>
-        <li><span class="track-num">03</span> Puppy Love <span class="track-dur">1:36</span></li>
-        <li><span class="track-num">04</span> Dumb Enough <span class="track-dur">2:18</span></li>
-        <li><span class="track-num">05</span> No Frillz <span class="track-dur">1:50</span></li>
-        <li><span class="track-num">06</span> Crime2Slime <span class="track-dur">2:17</span></li>
-        <li><span class="track-num">07</span> Lemmy is God <span class="track-dur">1:46</span></li>
-        <li><span class="track-num">08</span> Banana Bread <span class="track-dur">0:59</span></li>
-        <li><span class="track-num">09</span> Right On Slime <span class="track-dur">1:47</span></li>
-        <li><span class="track-num">10</span> I'm a Slimer (Part 2) <span class="track-dur">2:47</span></li>
-        <li><span class="track-num">11</span> Dutchman's Key <span class="track-dur">1:25</span></li>
-        <li><span class="track-num">12</span> Partyin With Slimer <span class="track-dur">2:32</span></li>
-      </ul>
-      <div style="margin-top: 24px;">
-        <a href="https://slimersmusic.bandcamp.com" target="_blank" class="btn btn-primary" style="width:100%; text-align:center; display:block;">LISTEN ON BANDCAMP</a>
+      <div style="flex:1; min-width:0;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:30px; color:#fff; letter-spacing:4px; line-height:1;">SLIMERS</div>
+        <div style="font-family:'VT323',monospace; font-size:17px; color:#39ff14; letter-spacing:3px; margin-top:3px;">SLIMERS · DEC 2025 · 12 TRACKS</div>
+        <div style="font-family:'VT323',monospace; font-size:14px; color:rgba(255,255,255,0.35); letter-spacing:2px; margin-top:2px;">GOO-PUNK · EGG PUNK · LAKE WORTH FL</div>
+      </div>
+      <a href="https://slimersmusic.bandcamp.com/album/slimers" target="_blank"
+        style="font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:2px; padding:6px 14px; background:transparent; color:#39ff14; border:1px solid rgba(57,255,20,0.6); text-decoration:none; white-space:nowrap; flex-shrink:0;">BANDCAMP ↗</a>
+    </div>
+
+    <!-- ── NOW PLAYING DISPLAY ── -->
+    <div id="ap-now-playing" style="background:#070f07; border:1px solid rgba(57,255,20,0.35); border-top: 2px solid #39ff14; border-bottom:none; padding:16px 20px;">
+      <!-- Waveform visualiser bars -->
+      <div id="ap-bars" style="display:flex; align-items:flex-end; gap:3px; height:28px; margin-bottom:12px;">
+        <div class="ap-bar" style="--d:0.0s"></div><div class="ap-bar" style="--d:0.1s"></div>
+        <div class="ap-bar" style="--d:0.2s"></div><div class="ap-bar" style="--d:0.15s"></div>
+        <div class="ap-bar" style="--d:0.05s"></div><div class="ap-bar" style="--d:0.25s"></div>
+        <div class="ap-bar" style="--d:0.3s"></div><div class="ap-bar" style="--d:0.1s"></div>
+        <div class="ap-bar" style="--d:0.2s"></div><div class="ap-bar" style="--d:0.0s"></div>
+        <div class="ap-bar" style="--d:0.35s"></div><div class="ap-bar" style="--d:0.15s"></div>
+        <div class="ap-bar" style="--d:0.05s"></div><div class="ap-bar" style="--d:0.28s"></div>
+        <div class="ap-bar" style="--d:0.18s"></div><div class="ap-bar" style="--d:0.08s"></div>
+      </div>
+
+      <!-- Track info row -->
+      <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:10px;">
+        <span id="ap-track-num" style="font-family:'VT323',monospace; font-size:18px; color:rgba(57,255,20,0.5); letter-spacing:2px; min-width:28px;">01</span>
+        <span id="ap-track-name" style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:#fff; letter-spacing:3px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">SELECT A TRACK</span>
+        <span id="ap-time-cur" style="font-family:'VT323',monospace; font-size:18px; color:#39ff14; letter-spacing:2px;">0:00</span>
+        <span style="font-family:'VT323',monospace; font-size:16px; color:rgba(255,255,255,0.25);">/</span>
+        <span id="ap-time-dur" style="font-family:'VT323',monospace; font-size:18px; color:rgba(255,255,255,0.4); letter-spacing:2px;">0:00</span>
+      </div>
+
+      <!-- Progress bar -->
+      <div id="ap-progress-wrap" style="width:100%; height:6px; background:rgba(57,255,20,0.12); cursor:pointer; border-radius:0; margin-bottom:14px; position:relative;">
+        <div id="ap-progress-fill" style="height:100%; width:0%; background:#39ff14; transition:width 0.1s linear; box-shadow:0 0 8px #39ff14;"></div>
+        <div id="ap-progress-handle" style="position:absolute; top:50%; width:12px; height:12px; background:#39ff14; border-radius:50%; transform:translate(-50%,-50%); left:0%; box-shadow:0 0 6px #39ff14;"></div>
+      </div>
+
+      <!-- Controls -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button id="ap-prev" class="ap-ctrl-btn" title="Previous">⏮</button>
+        <button id="ap-play" class="ap-ctrl-btn ap-play-btn" title="Play/Pause">▶</button>
+        <button id="ap-next" class="ap-ctrl-btn" title="Next">⏭</button>
+        <div style="flex:1;"></div>
+        <!-- Volume -->
+        <span style="font-family:'VT323',monospace; font-size:16px; color:rgba(255,255,255,0.4);">VOL</span>
+        <input id="ap-vol" type="range" min="0" max="1" step="0.05" value="0.8"
+          style="width:72px; accent-color:#39ff14; cursor:pointer;">
+        <!-- Loop toggle -->
+        <button id="ap-loop" class="ap-ctrl-btn ap-loop-btn" title="Loop" style="font-size:14px;">↺</button>
       </div>
     </div>
-    <div class="music-info">
-      <div class="info-block">
-        <h3>THE SOUND</h3>
-        <p>High-energy, fast, funny, and slimy. Slimers' self-titled debut cranks through 12 tracks in under 25 minutes — the way punk is supposed to work. Big bright vocal melodies over raw garage punk nerviness, with enough references to make any Ghostbusters fan lose their mind.</p>
-        <div class="tags">
-          <span class="tag">EGG PUNK</span>
-          <span class="tag">GARAGE PUNK</span>
-          <span class="tag">RAMONESCORE</span>
-          <span class="tag">SLIMECORE</span>
-          <span class="tag">SLIMEPUNK</span>
-          <span class="tag">FLORIDA</span>
-        </div>
-      </div>
-      <div class="info-block">
-        <h3>BANDCAMP NOTABLE</h3>
-        <p>Slimers' music caught the ear of Bandcamp's editors, landing on <strong style="color:var(--slime);">Bandcamp New & Notable</strong> — one of the most coveted shoutouts in independent music. Not bad for two dudes with 0 brains.</p>
-      </div>
-      <div class="info-block">
-        <h3>DOWNLOAD + STREAM</h3>
-        <p>Available on Bandcamp in high-quality MP3 and lossless FLAC. Name your price. Because slime should be accessible to all.</p>
-      </div>
-      <div class="ghost-fact">
-        <div class="ghost-fact-icon">👻</div>
-        <div class="ghost-fact-text">Track 3 features a cameo by <strong>Oscar</strong>. Track 9 features <strong>Lou Boy</strong>. Track 12 brings in <strong>@johnrobertbridgesiii</strong>. The Slimers universe grows.</div>
-      </div>
+
+    <!-- ── TRACKLIST ── -->
+    <div id="ap-tracklist" style="border:1px solid rgba(57,255,20,0.35); border-top:none; background:#060d06;"></div>
+
+    <!-- Bottom link -->
+    <div style="text-align:center; margin-top:20px;">
+      <a href="https://slimersmusic.bandcamp.com/album/slimers" target="_blank" class="btn btn-outline" style="font-size:16px; letter-spacing:3px;">BUY / DOWNLOAD ON BANDCAMP ↗</a>
     </div>
+
+    <!-- Hidden audio element -->
+    <audio id="ap-audio" preload="none" style="display:none;"></audio>
   </div>
 </section>
 
+<style>
+  /* ── Waveform bars ── */
+  .ap-bar {
+    flex:1; background:#39ff14; border-radius:1px;
+    min-height:4px; max-height:28px;
+    transform-origin: bottom;
+    animation: ap-bounce 0.8s ease-in-out infinite alternate;
+    animation-delay: var(--d, 0s);
+    animation-play-state: paused;
+    opacity: 0.5;
+    height: 8px;
+  }
+  .ap-playing .ap-bar {
+    animation-play-state: running;
+    opacity: 1;
+  }
+  @keyframes ap-bounce {
+    0%   { height: 4px; }
+    100% { height: 24px; }
+  }
+
+  /* ── Control buttons ── */
+  .ap-ctrl-btn {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(57,255,20,0.25);
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .ap-ctrl-btn:hover { color: #39ff14; border-color: #39ff14; }
+  .ap-play-btn {
+    font-size: 24px;
+    color: #39ff14;
+    border-color: #39ff14;
+    padding: 6px 18px;
+    box-shadow: 0 0 8px rgba(57,255,20,0.3);
+  }
+  .ap-play-btn:hover { background: rgba(57,255,20,0.1); box-shadow: 0 0 14px rgba(57,255,20,0.5); }
+  .ap-loop-btn.active { color: #39ff14; border-color: #39ff14; background: rgba(57,255,20,0.1); }
+
+  /* ── Tracklist rows ── */
+  .ap-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(57,255,20,0.07);
+    cursor: pointer;
+    transition: background 0.12s;
+    user-select: none;
+  }
+  .ap-row:last-child { border-bottom: none; }
+  .ap-row:hover { background: rgba(57,255,20,0.06); }
+  .ap-row.ap-active { background: rgba(57,255,20,0.11); border-left: 3px solid #39ff14; }
+  .ap-row.ap-unavail { opacity: 0.4; cursor: default; }
+  .ap-row-num {
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    color: rgba(57,255,20,0.4);
+    min-width: 22px;
+  }
+  .ap-row-icon {
+    font-size: 11px;
+    color: rgba(57,255,20,0.4);
+    min-width: 14px;
+    text-align: center;
+  }
+  .ap-row.ap-active .ap-row-icon { color: #39ff14; animation: ap-blink 0.9s step-end infinite; }
+  @keyframes ap-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .ap-row-title {
+    flex: 1;
+    font-family: 'Special Elite', cursive;
+    font-size: 14px;
+    color: rgba(255,255,255,0.72);
+    transition: color 0.12s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ap-row:hover .ap-row-title,
+  .ap-row.ap-active .ap-row-title { color: #39ff14; }
+  .ap-row-dur {
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    color: rgba(255,255,255,0.25);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .ap-row-missing {
+    font-family: 'VT323', monospace;
+    font-size: 12px;
+    color: rgba(255,100,100,0.4);
+    letter-spacing: 1px;
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── TRACK LIST ──────────────────────────────────────────────────────────────
+  // Files must live in an  audio/  folder next to index.html in your repo.
+  // Exact filename format: "SLIMERS - SLIMERS - 01 I'm a Slimer (Part 1).mp3"
+  const TRACKS = [
+    { n:1,  title:"I'm a Slimer (Part 1)",  dur:"1:31" },
+    { n:2,  title:"Down Low TOO S L O W",   dur:"1:38" },
+    { n:3,  title:"Puppy Love",             dur:"1:36" },
+    { n:4,  title:"Dumb Enough",            dur:"2:18" },
+    { n:5,  title:"No Frillz",             dur:"1:50" },
+    { n:6,  title:"Crime2Slime",           dur:"2:17" },
+    { n:7,  title:"Lemmy is God",          dur:"1:46" },
+    { n:8,  title:"Banana Bread",          dur:"0:59" },
+    { n:9,  title:"Right On Slime",        dur:"1:47" },
+    { n:10, title:"I'm a Slimer (Part 2)", dur:"2:47" },
+    { n:11, title:"Dutchman's Key",        dur:"1:25" },
+    { n:12, title:"Partyin With Slimer",   dur:"2:32" },
+  ];
+
+  // Build the audio file path from track data
+  // Pattern: audio/SLIMERS - SLIMERS - 01 I'm a Slimer (Part 1).mp3
+  function trackPath(t) {
+    const num = String(t.n).padStart(2, '0');
+    return `audio/SLIMERS - SLIMERS - ${num} ${t.title}.mp3`;
+  }
+
+  // ── ELEMENTS ────────────────────────────────────────────────────────────────
+  const audio     = document.getElementById('ap-audio');
+  const listEl    = document.getElementById('ap-tracklist');
+  const playBtn   = document.getElementById('ap-play');
+  const prevBtn   = document.getElementById('ap-prev');
+  const nextBtn   = document.getElementById('ap-next');
+  const loopBtn   = document.getElementById('ap-loop');
+  const volSlider = document.getElementById('ap-vol');
+  const progWrap  = document.getElementById('ap-progress-wrap');
+  const progFill  = document.getElementById('ap-progress-fill');
+  const progHandle= document.getElementById('ap-progress-handle');
+  const timeCur   = document.getElementById('ap-time-cur');
+  const timeDur   = document.getElementById('ap-time-dur');
+  const trackNum  = document.getElementById('ap-track-num');
+  const trackName = document.getElementById('ap-track-name');
+  const barsWrap  = document.getElementById('ap-bars');
+
+  let current = -1;
+  let looping = false;
+  let rows = [];
+  let isSeeking = false;
+
+  // ── BUILD TRACKLIST ─────────────────────────────────────────────────────────
+  TRACKS.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'ap-row';
+    row.dataset.idx = i;
+    row.innerHTML = `
+      <span class="ap-row-num">${String(t.n).padStart(2,'0')}</span>
+      <span class="ap-row-icon">▶</span>
+      <span class="ap-row-title">${t.title}</span>
+      <span class="ap-row-dur">${t.dur}</span>
+    `;
+    row.addEventListener('click', () => loadAndPlay(i));
+    listEl.appendChild(row);
+    rows.push(row);
+  });
+
+  // ── HELPERS ─────────────────────────────────────────────────────────────────
+  function fmt(sec) {
+    if (isNaN(sec) || !isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function setActive(idx) {
+    rows.forEach(r => r.classList.remove('ap-active'));
+    if (idx >= 0) rows[idx].classList.add('ap-active');
+  }
+
+  function setPlaying(playing) {
+    playBtn.textContent = playing ? '⏸' : '▶';
+    if (playing) {
+      barsWrap.parentElement.classList.add('ap-playing');
+    } else {
+      barsWrap.parentElement.classList.remove('ap-playing');
+    }
+  }
+
+  function updateProgress() {
+    if (!audio.duration || isSeeking) return;
+    const pct = (audio.currentTime / audio.duration) * 100;
+    progFill.style.width = pct + '%';
+    progHandle.style.left = pct + '%';
+    timeCur.textContent = fmt(audio.currentTime);
+    timeDur.textContent = fmt(audio.duration);
+  }
+
+  // ── LOAD & PLAY ─────────────────────────────────────────────────────────────
+  function loadAndPlay(idx) {
+    if (idx < 0 || idx >= TRACKS.length) return;
+    const t = TRACKS[idx];
+    current = idx;
+
+    // Update display
+    trackNum.textContent = String(t.n).padStart(2, '0');
+    trackName.textContent = t.title;
+    timeCur.textContent = '0:00';
+    timeDur.textContent = t.dur;
+    progFill.style.width = '0%';
+    progHandle.style.left = '0%';
+    setActive(idx);
+
+    // Load audio
+    audio.src = trackPath(t);
+    audio.volume = parseFloat(volSlider.value);
+    audio.load();
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => setPlaying(true)).catch(() => setPlaying(false));
+    }
+
+    // Scroll row into view smoothly
+    rows[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ── CONTROLS ────────────────────────────────────────────────────────────────
+  playBtn.addEventListener('click', () => {
+    if (current === -1) { loadAndPlay(0); return; }
+    if (audio.paused) {
+      audio.play().then(() => setPlaying(true)).catch(() => {});
+    } else {
+      audio.pause();
+      setPlaying(false);
+    }
+  });
+
+  prevBtn.addEventListener('click', () => {
+    // If >3s in, restart current; else go to previous
+    if (audio.currentTime > 3) {
+      audio.currentTime = 0;
+    } else {
+      loadAndPlay(current <= 0 ? TRACKS.length - 1 : current - 1);
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    loadAndPlay(current >= TRACKS.length - 1 ? 0 : current + 1);
+  });
+
+  loopBtn.addEventListener('click', () => {
+    looping = !looping;
+    audio.loop = looping;
+    loopBtn.classList.toggle('active', looping);
+  });
+
+  volSlider.addEventListener('input', () => {
+    audio.volume = parseFloat(volSlider.value);
+  });
+
+  // ── PROGRESS SEEKING ────────────────────────────────────────────────────────
+  function seekFromEvent(e) {
+    const rect = progWrap.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    if (audio.duration) {
+      audio.currentTime = pct * audio.duration;
+      progFill.style.width = (pct * 100) + '%';
+      progHandle.style.left = (pct * 100) + '%';
+    }
+  }
+
+  progWrap.addEventListener('mousedown', e => {
+    if (current === -1) return;
+    isSeeking = true;
+    seekFromEvent(e);
+  });
+  document.addEventListener('mousemove', e => { if (isSeeking) seekFromEvent(e); });
+  document.addEventListener('mouseup', () => { isSeeking = false; });
+
+  // Touch seeking
+  progWrap.addEventListener('touchstart', e => {
+    if (current === -1) return;
+    isSeeking = true;
+    seekFromEvent(e.touches[0]);
+  }, { passive: true });
+  document.addEventListener('touchmove', e => { if (isSeeking) seekFromEvent(e.touches[0]); }, { passive: true });
+  document.addEventListener('touchend', () => { isSeeking = false; });
+
+  // ── AUDIO EVENTS ────────────────────────────────────────────────────────────
+  audio.addEventListener('timeupdate', updateProgress);
+  audio.addEventListener('loadedmetadata', () => {
+    timeDur.textContent = fmt(audio.duration);
+  });
+  audio.addEventListener('play', () => setPlaying(true));
+  audio.addEventListener('pause', () => setPlaying(false));
+  audio.addEventListener('ended', () => {
+    if (!looping) {
+      if (current < TRACKS.length - 1) {
+        loadAndPlay(current + 1);
+      } else {
+        setPlaying(false);
+        progFill.style.width = '0%';
+        progHandle.style.left = '0%';
+        timeCur.textContent = '0:00';
+      }
+    }
+  });
+  audio.addEventListener('error', () => {
+    setPlaying(false);
+    trackName.textContent = trackName.textContent + ' — FILE NOT FOUND';
+    trackName.style.color = 'rgba(255,100,100,0.7)';
+    setTimeout(() => { trackName.style.color = ''; }, 3000);
+  });
+
+  // Keyboard shortcuts (only when music section is visible)
+  document.addEventListener('keydown', e => {
+    // Don't hijack when game canvas is focused
+    if (document.activeElement && document.activeElement.tagName === 'CANVAS') return;
+    if (e.code === 'KeyM') { // M = toggle play
+      if (current === -1) { loadAndPlay(0); return; }
+      audio.paused ? audio.play() : audio.pause();
+    }
+  });
+
+})();
+</script>
+
 <div class="slime-sep"></div>
 
-<!-- 2D SIDE-SCROLLER GAME -->
-<section id="game" style="background:#080808; padding: 70px 20px;">
-  <div style="max-width:960px; margin:0 auto;">
+
+<!-- FPS GAME -->
+<section id="game" style="background:#02050a; padding: 70px 20px;">
+  <div style="max-width:900px; margin:0 auto;">
     <div class="section-header">
-      <span class="section-tag">◇ TAKE A BREAK ◇</span>
-      <h2 class="section-title">GOO-PUNK HUNTER</h2>
+      <span class="section-tag">◇ SLIMERS ARCADE ◇</span>
+      <h2 class="section-title">BASS BLASTER 3000</h2>
       <div class="section-divider"></div>
     </div>
     <p style="text-align:center; font-family:'VT323',monospace; font-size:19px; color:rgba(255,255,255,0.4); letter-spacing:3px; margin-bottom:24px;">
-      A/D OR ←/→ MOVE &nbsp;·&nbsp; W/↑ JUMP &nbsp;·&nbsp; SPACE SHOOT &nbsp;·&nbsp; COLLECT 🍺 &amp; 🍕 FOR HEALTH
+      ←/→ TURN &nbsp;·&nbsp; ↑/↓ or W/S MOVE &nbsp;·&nbsp; SPACE SHOOT &nbsp;·&nbsp; BLAST GHOSTS WITH MUSICAL NOTES
     </p>
 
     <div style="display:flex; flex-direction:column; align-items:center;">
-      <!-- HUD bar -->
-      <div style="width:700px; max-width:100%; background:#0a0a0a; border:2px solid #39ff14; border-bottom:none; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; font-family:'VT323',monospace; font-size:21px; letter-spacing:2px; flex-wrap:wrap; gap:6px;">
-        <span style="color:#39ff14;">SCORE: <span id="g-score">0</span></span>
-        <span style="color:#ff6a00;">WAVE: <span id="g-wave">1</span></span>
-        <span id="g-health-bar" style="display:flex; align-items:center; gap:6px;">
-          <span style="color:#ff4444;">HP</span>
-          <span id="g-hp-pips" style="letter-spacing:1px;">●●●●●</span>
-        </span>
-        <span style="color:#ffe600;">HI: <span id="g-hi">0</span></span>
+      <!-- HUD -->
+      <div style="width:640px;max-width:100%;background:#000;border:2px solid #39ff14;border-bottom:none;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;font-family:'VT323',monospace;font-size:20px;letter-spacing:2px;">
+        <span style="color:#39ff14;">SCORE: <span id="fps-score">0</span></span>
+        <span style="color:#ff6a00;">WAVE: <span id="fps-wave">1</span></span>
+        <span style="color:#ff4444;">HP: <span id="fps-hp">♥♥♥♥♥</span></span>
+        <span style="color:#ffe600;">AMMO: <span id="fps-ammo">♪♪♪♪♪♪♪♪♪♪</span></span>
       </div>
-
-      <canvas id="gc" width="700" height="460"
-        style="display:block; border:2px solid #39ff14; box-shadow:0 0 28px #39ff1450, 0 0 70px #1a8c0030; max-width:100%; background:#05080a;"></canvas>
-
-      <div style="width:700px; max-width:100%; background:#0a0a0a; border:2px solid #39ff14; border-top:none; padding:8px 16px; display:flex; justify-content:center; gap:12px;">
-        <button id="g-start" style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:8px 30px;background:#39ff14;color:#050505;border:none;cursor:pointer;">START</button>
-        <button id="g-pause" style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:8px 24px;background:transparent;color:#39ff14;border:2px solid #39ff14;cursor:pointer;display:none;">PAUSE</button>
+      <canvas id="fps-canvas" width="640" height="400"
+        style="display:block;border:2px solid #39ff14;box-shadow:0 0 30px #39ff1440,0 0 80px #1a8c0030;max-width:100%;cursor:none;"></canvas>
+      <div style="width:640px;max-width:100%;background:#000;border:2px solid #39ff14;border-top:none;padding:8px 16px;display:flex;justify-content:center;gap:12px;">
+        <button id="fps-start" style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:8px 30px;background:#39ff14;color:#000;border:none;cursor:pointer;">START</button>
+        <button id="fps-pause" style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:8px 24px;background:transparent;color:#39ff14;border:2px solid #39ff14;cursor:pointer;display:none;">PAUSE</button>
       </div>
     </div>
 
-    <!-- Mobile controls -->
-    <div id="g-mobile" style="display:none; flex-direction:column; align-items:center; gap:10px; margin-top:18px;">
-      <div style="display:flex; gap:10px; align-items:center;">
-        <button class="gcb" id="gm-left">◄</button>
-        <button class="gcb" id="gm-jump" style="background:rgba(57,255,20,0.15)!important;">▲ JUMP</button>
-        <button class="gcb" id="gm-right">►</button>
-        <button class="gcb" id="gm-shoot" style="background:rgba(255,106,0,0.18)!important;color:#ff6a00!important;border-color:#ff6a00!important;min-width:70px;">SHOOT</button>
+    <!-- Mobile -->
+    <div id="fps-mobile" style="display:none;flex-direction:column;align-items:center;gap:10px;margin-top:16px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;">
+        <button class="fps-btn" id="fm-left">◄ TURN</button>
+        <button class="fps-btn" id="fm-fwd">▲ FWD</button>
+        <button class="fps-btn" id="fm-back">▼ BACK</button>
+        <button class="fps-btn" id="fm-right">TURN ►</button>
+        <button class="fps-btn" id="fm-shoot" style="background:rgba(255,106,0,0.2)!important;color:#ff6a00!important;border-color:#ff6a00!important;min-width:80px;">♪ SHOOT</button>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  .gcb {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    min-width: 56px; height: 52px;
-    background: rgba(57,255,20,0.08);
-    color: #39ff14;
-    border: 2px solid #39ff14;
-    cursor: pointer;
-    letter-spacing: 2px;
-    padding: 0 10px;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
-  @media (max-width: 700px) { #g-mobile { display:flex !important; } }
+  .fps-btn{font-family:'Bebas Neue',sans-serif;font-size:17px;padding:10px 16px;background:rgba(57,255,20,0.08);color:#39ff14;border:2px solid #39ff14;cursor:pointer;letter-spacing:2px;-webkit-tap-highlight-color:transparent;user-select:none;}
+  @media(max-width:680px){#fps-mobile{display:flex!important;}}
 </style>
 
 <script>
 (function(){
 'use strict';
-const cv = document.getElementById('gc');
+const cv = document.getElementById('fps-canvas');
 const cx = cv.getContext('2d');
-const W = cv.width, H = cv.height;
-const GROUND = H - 56;
+const CW = cv.width, CH = cv.height;
 
-// ─── text helper ───────────────────────────────────────
-function txt(s, x, y, sz, col, align) {
-  cx.font = sz + "px 'VT323', monospace";
-  cx.fillStyle = col || '#39ff14';
-  cx.textAlign = align || 'left';
-  cx.fillText(s, x, y);
-  cx.textAlign = 'left';
+// ── RAYCASTER CONSTANTS ─────────────────────────────────
+const MAPW = 16, MAPH = 16;
+const FOV = Math.PI / 3;
+const HALF_FOV = FOV / 2;
+const NUM_RAYS = 160;
+const RAY_STEP = FOV / NUM_RAYS;
+const HALF_CH = CH / 2;
+const MAX_DEPTH = 14;
+const MOVE_SPEED = 0.06;
+const ROT_SPEED = 0.045;
+const WALL_H_SCALE = 220;
+
+// ── MAP ──────────────────────────────────────────────────
+// 0=empty, 1=wall, 2=neon-wall, 3=ghost-wall
+const RAW_MAP = [
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,1,1,0,2,0,1,1,0,2,0,1,0,0,1],
+  [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
+  [1,0,0,0,2,0,1,0,0,1,0,2,0,0,0,1],
+  [1,0,2,0,0,0,0,0,0,0,0,0,0,0,2,1],
+  [1,0,0,0,1,0,2,0,0,2,0,1,0,0,0,1],
+  [1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
+  [1,0,0,0,0,2,0,0,0,0,2,0,0,0,0,1],
+  [1,0,2,0,1,0,0,0,0,0,0,1,0,2,0,1],
+  [1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1],
+  [1,0,1,0,2,0,0,0,0,0,0,2,0,1,0,1],
+  [1,0,0,1,0,0,0,2,2,0,0,0,1,0,0,1],
+  [1,0,2,0,0,1,0,0,0,0,1,0,0,2,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+const MAP = RAW_MAP;
+
+function isWall(x,y){
+  const mx=Math.floor(x), my=Math.floor(y);
+  if(mx<0||mx>=MAPW||my<0||my>=MAPH) return true;
+  return MAP[my][mx] !== 0;
+}
+function wallType(x,y){
+  const mx=Math.floor(x), my=Math.floor(y);
+  if(mx<0||mx>=MAPW||my<0||my>=MAPH) return 1;
+  return MAP[my][mx];
 }
 
-// ─── BG PARALLAX LAYERS ────────────────────────────────
-// City silhouette buildings (drawn once, scrolled)
-const BUILDINGS = Array.from({length:18}, (_,i) => ({
-  x: i * 90 + Math.random()*40,
-  w: 40 + Math.random()*50,
-  h: 60 + Math.random()*120,
-  shade: Math.random() > 0.5
-}));
+// ── PLAYER ───────────────────────────────────────────────
+const player = { x:2, y:2, angle:0, hp:5, maxHp:5, ammo:10, maxAmmo:10 };
 
-let bgScroll = 0;
+// ── ENEMIES ──────────────────────────────────────────────
+// Types: 0=ghost (white), 1=ghoul (blue-gray), 2=booger (green)
+let enemies = [];
+let bullets = [];
+let pickups = [];
+let particles3d = [];
+let frame = 0;
+let score = 0, hiScore = 0, wave = 1;
+let state = 'title';
+let keys = {};
+let shootCooldown = 0;
+let flashTimer = 0; // screen flash on hit
+let waveKills = 0, waveTarget = 0;
+let ammoRespawnTimer = 0;
 
-function drawBG() {
-  // Sky gradient
-  const grd = cx.createLinearGradient(0,0,0,GROUND);
-  grd.addColorStop(0,'#020d16');
-  grd.addColorStop(1,'#04150a');
-  cx.fillStyle = grd;
-  cx.fillRect(0,0,W,H);
-
-  // Stars
-  for(let s of stars){ cx.fillStyle=`rgba(200,255,200,${s.b})`; cx.fillRect(s.x,s.y,s.r,s.r); }
-
-  // Moon
-  cx.fillStyle='#d4f0c0'; cx.beginPath(); cx.arc(W-80,50,26,0,Math.PI*2); cx.fill();
-  cx.fillStyle='#020d16'; cx.beginPath(); cx.arc(W-70,44,22,0,Math.PI*2); cx.fill();
-
-  // Buildings far (slow scroll)
-  cx.save(); cx.translate(-(bgScroll*0.15)%W, 0);
-  for(let rep=0;rep<3;rep++){
-    BUILDINGS.forEach(b=>{
-      const bx = b.x + rep*W*0.9;
-      cx.fillStyle = b.shade ? '#0a1a10':'#071410';
-      cx.fillRect(bx, GROUND-b.h, b.w, b.h);
-      // windows
-      cx.fillStyle='rgba(255,230,100,0.15)';
-      for(let wy=GROUND-b.h+8;wy<GROUND-12;wy+=18){
-        for(let wx=bx+6;wx<bx+b.w-6;wx+=14){
-          if(Math.sin(wx*7.3+wy*3.1)>0.2) cx.fillRect(wx,wy,7,9);
-        }
-      }
+function spawnEnemies() {
+  enemies = [];
+  waveKills = 0;
+  const count = 3 + wave * 2;
+  waveTarget = count;
+  const spawnCells = [];
+  for(let y=1;y<MAPH-1;y++) for(let x=1;x<MAPW-1;x++){
+    if(MAP[y][x]===0){
+      const dx=x-player.x, dy=y-player.y;
+      if(dx*dx+dy*dy > 9) spawnCells.push({x:x+0.5,y:y+0.5});
+    }
+  }
+  for(let i=0;i<count;i++){
+    const cell = spawnCells[Math.floor(Math.random()*spawnCells.length)];
+    const type = i%3===0?2:i%3===1?1:0;
+    enemies.push({
+      x:cell.x, y:cell.y,
+      type, angle:Math.random()*Math.PI*2,
+      hp: type===1?3:type===2?2:1,
+      maxHp: type===1?3:type===2?2:1,
+      speed: 0.016+wave*0.003,
+      shootTimer: Math.floor(Math.random()*120),
+      shootFreq: Math.max(40,100-wave*8),
+      dead:false, deathTimer:0,
+      // Bobbing for sprite
+      bobOffset: Math.random()*Math.PI*2,
     });
   }
-  cx.restore();
-
-  // Ground platform with neon line
-  cx.fillStyle='#061208';
-  cx.fillRect(0, GROUND, W, H-GROUND);
-  cx.strokeStyle='#39ff14'; cx.lineWidth=2;
-  cx.shadowColor='#39ff14'; cx.shadowBlur=10;
-  cx.beginPath(); cx.moveTo(0,GROUND); cx.lineTo(W,GROUND); cx.stroke();
-  cx.shadowBlur=0;
-}
-
-// ─── STARS ────────────────────────────────────────────
-const stars = Array.from({length:70},()=>({
-  x:Math.random()*W, y:Math.random()*(GROUND-20),
-  r:Math.random()>0.8?2:1,
-  b:0.05+Math.random()*0.25
-}));
-
-// ─── SPRITES ──────────────────────────────────────────
-
-// Player = Slimer punk dude, side-facing, runs left/right
-function drawSlimer(x, y, dir, frame, flash, hp) {
-  cx.save();
-  if(flash && frame%6<3){ cx.globalAlpha=0.4; }
-  if(dir===-1) { cx.scale(-1,1); x=-x; }
-
-  // Shadow
-  cx.fillStyle='rgba(57,255,20,0.15)';
-  cx.beginPath(); cx.ellipse(x,y+2,14,4,0,0,Math.PI*2); cx.fill();
-
-  // Body (green blob punk)
-  const bob = Math.sin(frame*0.18)*2;
-  // torso
-  cx.fillStyle='#39ff14';
-  cx.beginPath(); cx.ellipse(x, y-14+bob, 13, 17, 0, 0, Math.PI*2); cx.fill();
-  // punk jacket
-  cx.fillStyle='#1a0000';
-  cx.fillRect(x-12, y-24+bob, 24, 18);
-  // jacket lapels
-  cx.fillStyle='#2a0000';
-  cx.fillRect(x-12, y-24+bob, 6, 18);
-  cx.fillRect(x+6, y-24+bob, 6, 18);
-  // stud details
-  cx.fillStyle='#ffe600';
-  cx.fillRect(x-10, y-20+bob, 3, 3);
-  cx.fillRect(x-10, y-14+bob, 3, 3);
-  cx.fillRect(x+7, y-20+bob, 3, 3);
-
-  // head (green blob)
-  cx.fillStyle='#39ff14';
-  cx.beginPath(); cx.ellipse(x+2, y-34+bob, 12, 12, 0, 0, Math.PI*2); cx.fill();
-  // mohawk
-  cx.fillStyle='#ff6a00';
-  cx.beginPath();
-  cx.moveTo(x-2, y-44+bob);
-  cx.lineTo(x+6, y-48+bob);
-  cx.lineTo(x+10, y-44+bob);
-  cx.lineTo(x+6, y-38+bob);
-  cx.lineTo(x+0, y-38+bob);
-  cx.fill();
-  // eyes
-  cx.fillStyle='#fff';
-  cx.beginPath(); cx.ellipse(x+6, y-34+bob, 4, 5, 0, 0, Math.PI*2); cx.fill();
-  cx.fillStyle='#000';
-  cx.beginPath(); cx.ellipse(x+7, y-33+bob, 2, 3, 0, 0, Math.PI*2); cx.fill();
-  // angry brow
-  cx.strokeStyle='#1a4400'; cx.lineWidth=2;
-  cx.beginPath(); cx.moveTo(x+3,y-39+bob); cx.lineTo(x+10,y-38+bob); cx.stroke();
-
-  // legs (run animation)
-  const legSwing = Math.sin(frame*0.25)*10;
-  cx.fillStyle='#0d0d0d';
-  cx.fillRect(x-8, y-6+bob, 7, 14);
-  cx.fillRect(x+1, y-6+bob, 7, 14);
-  // boots
-  cx.fillStyle='#222';
-  cx.fillRect(x-9, y+6+bob, 9, 6);
-  cx.fillRect(x+0, y+6+bob, 9, 6);
-
-  // Slime gun (proton pack style)
-  cx.fillStyle='#ff6a00';
-  cx.fillRect(x+10, y-22+bob, 14, 7);
-  cx.fillStyle='#ffe600';
-  cx.fillRect(x+22, y-21+bob, 6, 5);
-
-  cx.restore();
-}
-
-// Ghost enemy — creepy white ghost, side-view
-function drawGhostEnemy(g) {
-  const x=g.x, y=g.y, f=g.frame, hp=g.hp, maxHp=g.maxHp;
-  cx.save();
-  if(g.flashTimer && g.flashTimer%4<2){ cx.globalAlpha=0.3; }
-  // body
-  const bob = Math.sin(f*0.07)*4;
-  cx.fillStyle = g.type===1 ? '#c8e8ff' : g.type===2 ? '#ffbbbb' : '#ccffcc';
-  cx.beginPath(); cx.ellipse(x, y+bob, 18, 16, 0, 0, Math.PI*2); cx.fill();
-  // wavy bottom
-  cx.beginPath();
-  cx.moveTo(x-18, y+10+bob);
-  cx.bezierCurveTo(x-10,y+26+bob, x-2,y+18+bob, x+6,y+26+bob);
-  cx.bezierCurveTo(x+12,y+18+bob, x+18,y+26+bob, x+18,y+10+bob);
-  cx.fill();
-  // eyes
-  cx.fillStyle='#000';
-  cx.beginPath(); cx.ellipse(x-6, y-2+bob, 5, 6, -0.3, 0, Math.PI*2); cx.fill();
-  cx.beginPath(); cx.ellipse(x+6, y-2+bob, 5, 6, 0.3, 0, Math.PI*2); cx.fill();
-  // evil glow eyes
-  cx.fillStyle= g.type===2?'#ff4444':'#ff0000';
-  cx.beginPath(); cx.ellipse(x-6, y-2+bob, 2, 3, 0, 0, Math.PI*2); cx.fill();
-  cx.beginPath(); cx.ellipse(x+6, y-2+bob, 2, 3, 0, 0, Math.PI*2); cx.fill();
-  // mouth
-  cx.strokeStyle='#000'; cx.lineWidth=2;
-  cx.beginPath(); cx.arc(x, y+6+bob, 7, 0.1, Math.PI-0.1); cx.stroke();
-  // teeth
-  cx.fillStyle='#fff';
-  for(let t=-1;t<=1;t++) cx.fillRect(x+t*4-2, y+6+bob, 4, 4);
-
-  // HP bar above ghost
-  if(maxHp>1){
-    cx.fillStyle='#330000'; cx.fillRect(x-18,y-30+bob,36,5);
-    cx.fillStyle='#ff4444'; cx.fillRect(x-18,y-30+bob,(hp/maxHp)*36,5);
+  // Spawn ammo pickups
+  pickups = [];
+  for(let i=0;i<4;i++){
+    const cell = spawnCells[Math.floor(Math.random()*spawnCells.length)];
+    pickups.push({x:cell.x,y:cell.y,type:'ammo',collected:false});
   }
-  cx.restore();
+  ammoRespawnTimer = 300;
 }
 
-// Beer can pickup
-function drawBeer(x, y, f) {
-  const bob = Math.sin(f*0.1)*3;
-  cx.save();
-  // can body
-  cx.fillStyle='#c8960a';
-  cx.fillRect(x-7, y-14+bob, 14, 20);
-  cx.fillStyle='#ffe600';
-  cx.fillRect(x-7, y-14+bob, 14, 6);
-  // label stripe
-  cx.fillStyle='#ff6a00';
-  cx.fillRect(x-7, y-4+bob, 14, 4);
-  // top
-  cx.fillStyle='#aaa';
-  cx.fillRect(x-5, y-16+bob, 10, 3);
-  cx.fillStyle='#666';
-  cx.fillRect(x-2, y-17+bob, 4, 2);
-  // glow
-  cx.shadowColor='#ffe600'; cx.shadowBlur=8;
-  cx.strokeStyle='#ffe600'; cx.lineWidth=1;
-  cx.strokeRect(x-7,y-14+bob,14,20);
-  cx.shadowBlur=0;
-  cx.restore();
-}
-
-// Pizza slice pickup
-function drawPizza(x, y, f) {
-  const bob = Math.sin(f*0.1+1)*3;
-  cx.save();
-  cx.translate(x, y+bob);
-  // crust
-  cx.fillStyle='#c8761a';
-  cx.beginPath(); cx.moveTo(0,-16); cx.lineTo(-14,10); cx.lineTo(14,10); cx.closePath(); cx.fill();
-  // cheese
-  cx.fillStyle='#ffe066';
-  cx.beginPath(); cx.moveTo(0,-12); cx.lineTo(-11,8); cx.lineTo(11,8); cx.closePath(); cx.fill();
-  // sauce dots
-  cx.fillStyle='#cc3300';
-  cx.beginPath(); cx.arc(-3,-2,3,0,Math.PI*2); cx.fill();
-  cx.beginPath(); cx.arc(4,4,2,0,Math.PI*2); cx.fill();
-  cx.beginPath(); cx.arc(-5,6,2,0,Math.PI*2); cx.fill();
-  // glow
-  cx.shadowColor='#ffcc00'; cx.shadowBlur=8;
-  cx.strokeStyle='#ffcc00'; cx.lineWidth=1;
-  cx.beginPath(); cx.moveTo(0,-16); cx.lineTo(-14,10); cx.lineTo(14,10); cx.closePath(); cx.stroke();
-  cx.shadowBlur=0;
-  cx.restore();
-}
-
-// Slime shot (green orb)
-function drawShot(b) {
-  cx.save();
-  cx.fillStyle='#39ff14';
-  cx.shadowColor='#39ff14'; cx.shadowBlur=10;
-  cx.beginPath(); cx.arc(b.x, b.y, 5, 0, Math.PI*2); cx.fill();
-  cx.fillStyle='#ffffff';
-  cx.beginPath(); cx.arc(b.x-1, b.y-1, 2, 0, Math.PI*2); cx.fill();
-  cx.shadowBlur=0;
-  cx.restore();
-}
-
-// Ghost spit (red orb)
-function drawGhostShot(b) {
-  cx.save();
-  cx.fillStyle='#ff4444';
-  cx.shadowColor='#ff4444'; cx.shadowBlur=8;
-  cx.beginPath(); cx.arc(b.x, b.y, 6, 0, Math.PI*2); cx.fill();
-  cx.shadowBlur=0;
-  cx.restore();
-}
-
-// Particle
-function spawnParticles(x, y, col, n) {
-  for(let i=0;i<(n||12);i++){
-    particles.push({x,y,vx:(Math.random()-0.5)*5,vy:(Math.random()-0.5)*5-2,
-      r:Math.random()*5+2, col:col||'#39ff14', life:1, decay:0.03+Math.random()*0.03});
-  }
-}
-
-// ─── GAME STATE ───────────────────────────────────────
-let state='title', frame=0, score=0, hiScore=0, wave=1;
-let particles=[], pickups=[], shots=[], ghostShots=[], ghosts=[];
-let pickupSpawnTimer=0, ghostSpawnTimer=0;
-let keys={}, shootCooldown=0;
-
-const MAX_HP = 5;
-const player = {
-  x:120, y:GROUND-2, vy:0, vx:0,
-  dir:1, onGround:true,
-  hp:MAX_HP, flashTimer:0,
-  speed:3.2, jumpPower:-13
-};
-
-// Platforms
-const PLATFORMS = [
-  {x:120,y:GROUND-120,w:140,h:12},
-  {x:320,y:GROUND-170,w:120,h:12},
-  {x:500,y:GROUND-110,w:140,h:12},
-  {x:60, y:GROUND-230,w:100,h:12},
-  {x:420,y:GROUND-260,w:130,h:12},
-  {x:230,y:GROUND-300,w:100,h:12},
-];
-
-function drawPlatform(p) {
-  cx.fillStyle='#0a2010';
-  cx.fillRect(p.x,p.y,p.w,p.h);
-  cx.strokeStyle='#39ff14'; cx.lineWidth=1.5;
-  cx.shadowColor='#39ff14'; cx.shadowBlur=6;
-  cx.strokeRect(p.x,p.y,p.w,p.h);
-  cx.shadowBlur=0;
-  // grid lines on platform
-  cx.strokeStyle='rgba(57,255,20,0.2)'; cx.lineWidth=1;
-  for(let px2=p.x+16;px2<p.x+p.w;px2+=16){
-    cx.beginPath(); cx.moveTo(px2,p.y); cx.lineTo(px2,p.y+p.h); cx.stroke();
-  }
-}
-
-// ─── WAVE CONFIG ─────────────────────────────────────
-function waveConfig() {
-  return {
-    ghostHP: Math.min(1+Math.floor(wave/3), 4),
-    ghostSpeed: 0.6 + wave*0.18,
-    ghostShootFreq: Math.max(40, 130-wave*12),
-    spawnRate: Math.max(80, 200-wave*18),
-    maxGhosts: 3+wave,
-    ghostTypes: wave>=4 ? [1,1,2,3] : wave>=2 ? [1,1,2] : [1,1,1],
-  };
-}
-
-function spawnGhost() {
-  const cfg = waveConfig();
-  if(ghosts.length >= cfg.maxGhosts) return;
-  const side = Math.random()>0.5 ? 1 : -1;
-  const startX = side===1 ? -30 : W+30;
-  const type = cfg.ghostTypes[Math.floor(Math.random()*cfg.ghostTypes.length)];
-  // Spawn on ground or platform
-  const plat = Math.random()>0.5 && PLATFORMS.length ?
-    PLATFORMS[Math.floor(Math.random()*PLATFORMS.length)] : null;
-  const gy = plat ? plat.y - 20 : GROUND - 20;
-  ghosts.push({
-    x:startX, y:gy,
-    vx: side * (cfg.ghostSpeed + Math.random()*0.3),
-    vy:0, onGround:true,
-    hp: cfg.ghostHP + (type===2?1:0),
-    maxHp: cfg.ghostHP + (type===2?1:0),
-    type, frame:0, flashTimer:0,
-    shootTimer: Math.floor(Math.random()*cfg.ghostShootFreq),
-    shootFreq: cfg.ghostShootFreq,
-    jumping: false, jumpTimer: Math.floor(Math.random()*120),
-  });
-}
-
-function spawnPickup() {
-  const t = Math.random()>0.45 ? 'beer' : 'pizza';
-  // Spawn on a platform or ground
-  const where = Math.random()>0.3 ?
-    PLATFORMS[Math.floor(Math.random()*PLATFORMS.length)] :
-    {x:60+Math.random()*(W-120), y:GROUND, w:0};
-  const x = where.x + Math.random()*Math.max(where.w,60);
-  const y = where.y - 18;
-  pickups.push({x, y, type:t, frame:0});
-}
-
-function resetGame() {
-  score=0; wave=1;
-  player.x=120; player.y=GROUND-2; player.vy=0; player.vx=0;
-  player.hp=MAX_HP; player.flashTimer=0; player.onGround=true; player.dir=1;
-  ghosts=[]; shots=[]; ghostShots=[]; pickups=[]; particles=[];
-  pickupSpawnTimer=60; ghostSpawnTimer=40;
+function resetGame(){
+  player.x=2; player.y=2; player.angle=0;
+  player.hp=player.maxHp; player.ammo=player.maxAmmo;
+  score=0; wave=1; bullets=[]; particles3d=[]; pickups=[];
+  flashTimer=0; shootCooldown=0;
+  spawnEnemies();
   updateHUD();
 }
 
-function updateHUD() {
-  document.getElementById('g-score').textContent = score;
-  document.getElementById('g-wave').textContent = wave;
-  document.getElementById('g-hi').textContent = hiScore;
-  const pips = '●'.repeat(player.hp) + '○'.repeat(MAX_HP-player.hp);
-  document.getElementById('g-hp-pips').textContent = pips;
-  document.getElementById('g-hp-pips').style.color =
-    player.hp<=1?'#ff3333':player.hp<=2?'#ff9900':'#39ff14';
+function updateHUD(){
+  document.getElementById('fps-score').textContent=score;
+  document.getElementById('fps-wave').textContent=wave;
+  document.getElementById('fps-hp').textContent='♥'.repeat(player.hp)+'♡'.repeat(player.maxHp-player.hp);
+  document.getElementById('fps-ammo').textContent='♪'.repeat(player.ammo)+'·'.repeat(player.maxAmmo-player.ammo);
 }
 
-// ─── INPUT ────────────────────────────────────────────
-document.addEventListener('keydown', e=>{
+// ── INPUT ────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
   keys[e.code]=true;
-  if(e.code==='Space'){ e.preventDefault(); tryShoot(); }
-  if(e.code==='KeyP' && state==='playing') togglePause();
-  if(e.code==='ArrowUp'||e.code==='KeyW'){ e.preventDefault(); tryJump(); }
-  if((e.code==='Space'||e.code==='Enter') && state==='title') startGame();
-  if((e.code==='Space'||e.code==='Enter') && state==='dead') { resetGame(); state='playing'; showPauseBtn(true); }
-  if((e.code==='Space'||e.code==='Enter') && state==='nextwave') advanceWave();
+  if(e.code==='Space'){e.preventDefault();tryShoot();}
+  if(e.code==='KeyP'&&state==='playing') togglePause();
+  if((e.code==='Space'||e.code==='Enter')&&state==='title') startGame();
+  if((e.code==='Space'||e.code==='Enter')&&state==='dead'){resetGame();state='playing';showPBtn(true);}
+  if((e.code==='Space'||e.code==='Enter')&&state==='nextwave'){wave++;spawnEnemies();bullets=[];state='playing';showPBtn(true);updateHUD();}
 });
-document.addEventListener('keyup', e=>{ keys[e.code]=false; });
+document.addEventListener('keyup',e=>{keys[e.code]=false;});
 
-function tryJump() {
-  if(state!=='playing') return;
-  if(player.onGround){ player.vy=player.jumpPower; player.onGround=false; }
-}
-function tryShoot() {
+function tryShoot(){
   if(state!=='playing'||shootCooldown>0) return;
-  shots.push({x:player.x+(player.dir===1?20:-20), y:player.y-20, vx:player.dir*10});
+  if(player.ammo<=0) return;
+  player.ammo--;
   shootCooldown=16;
-  spawnParticles(player.x+(player.dir===1?20:-20), player.y-20, '#39ff14', 4);
+  // Shoot a bullet in player direction
+  bullets.push({x:player.x,y:player.y,dx:Math.cos(player.angle)*0.18,dy:Math.sin(player.angle)*0.18,life:60});
+  updateHUD();
 }
 
-// Mobile
-function bindMob(id, down, up) {
-  const el=document.getElementById(id); if(!el) return;
+function bindFpsBtn(id,down,up){
+  const el=document.getElementById(id);if(!el)return;
   el.addEventListener('touchstart',e=>{e.preventDefault();down();},{passive:false});
   el.addEventListener('touchend',e=>{e.preventDefault();if(up)up();},{passive:false});
-  el.addEventListener('mousedown',down); if(up) el.addEventListener('mouseup',up);
+  el.addEventListener('mousedown',down);if(up)el.addEventListener('mouseup',up);
 }
-bindMob('gm-left', ()=>keys['ArrowLeft']=true, ()=>keys['ArrowLeft']=false);
-bindMob('gm-right', ()=>keys['ArrowRight']=true, ()=>keys['ArrowRight']=false);
-bindMob('gm-jump', ()=>tryJump(), null);
-bindMob('gm-shoot', ()=>tryShoot(), null);
+bindFpsBtn('fm-left',()=>keys['ArrowLeft']=true,()=>keys['ArrowLeft']=false);
+bindFpsBtn('fm-right',()=>keys['ArrowRight']=true,()=>keys['ArrowRight']=false);
+bindFpsBtn('fm-fwd',()=>keys['ArrowUp']=true,()=>keys['ArrowUp']=false);
+bindFpsBtn('fm-back',()=>keys['ArrowDown']=true,()=>keys['ArrowDown']=false);
+bindFpsBtn('fm-shoot',()=>tryShoot(),null);
 
-document.getElementById('g-start').addEventListener('click',()=>{
-  if(state==='title'||state==='dead') { resetGame(); state='playing'; showPauseBtn(true); }
-  else if(state==='nextwave') advanceWave();
-  else { resetGame(); state='playing'; }
+document.getElementById('fps-start').addEventListener('click',()=>{
+  if(state==='title'||state==='dead'){resetGame();state='playing';showPBtn(true);}
+  else if(state==='nextwave'){wave++;spawnEnemies();bullets=[];state='playing';showPBtn(true);updateHUD();}
+  else{resetGame();state='playing';}
 });
-document.getElementById('g-pause').addEventListener('click', togglePause);
+document.getElementById('fps-pause').addEventListener('click',togglePause);
 
-function showPauseBtn(v){
-  document.getElementById('g-pause').style.display = v?'inline-block':'none';
-  document.getElementById('g-start').textContent = v?'RESTART':'START';
+function showPBtn(v){
+  document.getElementById('fps-pause').style.display=v?'inline-block':'none';
+  document.getElementById('fps-start').textContent=v?'RESTART':'START';
 }
-function startGame(){ resetGame(); state='playing'; showPauseBtn(true); }
+function startGame(){resetGame();state='playing';showPBtn(true);}
 function togglePause(){
-  if(state==='playing'){ state='paused'; document.getElementById('g-pause').textContent='RESUME'; }
-  else if(state==='paused'){ state='playing'; document.getElementById('g-pause').textContent='PAUSE'; }
-}
-function advanceWave(){
-  wave++;
-  ghosts=[]; shots=[]; ghostShots=[]; particles=[];
-  ghostSpawnTimer=60; pickupSpawnTimer=80;
-  state='playing';
-  showPauseBtn(true);
-  updateHUD();
+  if(state==='playing'){state='paused';document.getElementById('fps-pause').textContent='RESUME';}
+  else if(state==='paused'){state='playing';document.getElementById('fps-pause').textContent='PAUSE';}
 }
 
-// ─── PHYSICS ─────────────────────────────────────────
-const GRAV = 0.55;
-function applyPhysics(obj) {
-  obj.vy += GRAV;
-  obj.y += obj.vy;
-  obj.onGround = false;
-  // Ground
-  if(obj.y >= GROUND) { obj.y=GROUND; obj.vy=0; obj.onGround=true; }
-  // Platforms
-  PLATFORMS.forEach(p=>{
-    if(obj.x+10>p.x && obj.x-10<p.x+p.w && obj.y>=p.y && obj.y<=p.y+p.h+8 && obj.vy>=0){
-      obj.y=p.y; obj.vy=0; obj.onGround=true;
+// ── RAYCASTING ──────────────────────────────────────────
+function castRay(angle) {
+  let x = player.x, y = player.y;
+  const cosA = Math.cos(angle), sinA = Math.sin(angle);
+  let dist = 0;
+  for(let step=0; step<MAX_DEPTH*20; step++){
+    dist += 0.05;
+    const rx = x + cosA * dist;
+    const ry = y + sinA * dist;
+    if(isWall(rx,ry)){
+      const wt = wallType(rx,ry);
+      // Fix fisheye
+      const corrected = dist * Math.cos(angle - player.angle);
+      return {dist: corrected, wType: wt, rx, ry};
     }
+  }
+  return {dist: MAX_DEPTH, wType:1, rx:x+cosA*MAX_DEPTH, ry:y+sinA*MAX_DEPTH};
+}
+
+// ── SPRITE PROJECTION ────────────────────────────────────
+function projectSprite(sx, sy) {
+  const dx = sx - player.x, dy = sy - player.y;
+  const dist = Math.sqrt(dx*dx+dy*dy);
+  if(dist < 0.1) return null;
+  // Angle to sprite relative to player view
+  let spriteAngle = Math.atan2(dy, dx) - player.angle;
+  // Normalize
+  while(spriteAngle > Math.PI) spriteAngle -= Math.PI*2;
+  while(spriteAngle < -Math.PI) spriteAngle += Math.PI*2;
+  if(Math.abs(spriteAngle) > HALF_FOV + 0.2) return null;
+  const screenX = CW/2 + Math.tan(spriteAngle) * (CW/2) / Math.tan(HALF_FOV);
+  return {screenX, dist};
+}
+
+// ── DRAW ROUTINES ────────────────────────────────────────
+// Wall colors per type
+const WALL_COLORS = [
+  null,
+  // type 1: concrete-cyber dark
+  {light:'#1a2a1a', dark:'#0a150a', accent:'#39ff14'},
+  // type 2: neon purple wall
+  {light:'#2a1a3a', dark:'#15091f', accent:'#cc44ff'},
+  // type 3: ghost wall (unused in map but handy)
+  {light:'#2a2a3a', dark:'#111122', accent:'#4488ff'},
+];
+
+let zBuffer = new Float32Array(NUM_RAYS);
+
+function drawScene(){
+  // Sky — cyberpunk night gradient
+  const sky = cx.createLinearGradient(0,0,0,HALF_CH);
+  sky.addColorStop(0,'#020008');
+  sky.addColorStop(1,'#050510');
+  cx.fillStyle=sky;
+  cx.fillRect(0,0,CW,HALF_CH);
+
+  // Neon horizon line
+  cx.fillStyle='rgba(57,255,20,0.06)';
+  cx.fillRect(0,HALF_CH-2,CW,4);
+
+  // Floor
+  const floor = cx.createLinearGradient(0,HALF_CH,0,CH);
+  floor.addColorStop(0,'#040a04');
+  floor.addColorStop(1,'#020402');
+  cx.fillStyle=floor;
+  cx.fillRect(0,HALF_CH,CW,HALF_CH);
+
+  // Floor grid (perspective lines)
+  cx.strokeStyle='rgba(57,255,20,0.06)';
+  cx.lineWidth=1;
+  for(let i=1;i<8;i++){
+    const yy = HALF_CH + (CH-HALF_CH)*(i/8);
+    cx.beginPath(); cx.moveTo(0,yy); cx.lineTo(CW,yy); cx.stroke();
+  }
+  for(let i=-3;i<=3;i++){
+    cx.beginPath();
+    cx.moveTo(CW/2+i*(CW/6),HALF_CH);
+    cx.lineTo(CW/2+i*(CW/2),CH);
+    cx.stroke();
+  }
+
+  // Rays + walls
+  const rayStep = FOV / NUM_RAYS;
+  for(let r=0; r<NUM_RAYS; r++){
+    const angle = player.angle - HALF_FOV + r * rayStep;
+    const {dist, wType} = castRay(angle);
+    zBuffer[r] = dist;
+    const wallH = Math.min(CH, WALL_H_SCALE / dist);
+    const top = HALF_CH - wallH/2;
+    const colIdx = wType < WALL_COLORS.length ? wType : 1;
+    const wc = WALL_COLORS[colIdx];
+    const bright = Math.max(0, 1 - dist/MAX_DEPTH);
+
+    // Wall shading
+    const x = (r / NUM_RAYS) * CW;
+    const sliceW = CW / NUM_RAYS + 1;
+
+    // Gradient wall slice
+    const wGrad = cx.createLinearGradient(x,top,x,top+wallH);
+    const baseLight = wc.light;
+    const baseDark = wc.dark;
+    wGrad.addColorStop(0, baseDark);
+    wGrad.addColorStop(0.35, baseLight);
+    wGrad.addColorStop(0.65, baseLight);
+    wGrad.addColorStop(1, baseDark);
+    cx.fillStyle = wGrad;
+    cx.fillRect(x, top, sliceW, wallH);
+
+    // Neon edge glow on close walls
+    if(dist < 3){
+      cx.fillStyle = `rgba(${hexToRgb(wc.accent)},${(1-dist/3)*0.18})`;
+      cx.fillRect(x,top,sliceW,wallH);
+    }
+    // Scan-line texture
+    if(Math.floor(top)%4===0){
+      cx.fillStyle=`rgba(0,0,0,${0.15+dist*0.04})`;
+      cx.fillRect(x,top,sliceW,wallH);
+    }
+  }
+}
+
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+// Draw enemy sprites
+function drawEnemies(){
+  // Sort far-to-near
+  const visible = enemies.filter(e=>!e.dead || e.deathTimer>0)
+    .map(e=>{
+      const proj = projectSprite(e.x,e.y);
+      return proj ? {...e,...proj} : null;
+    })
+    .filter(Boolean)
+    .sort((a,b)=>b.dist-a.dist);
+
+  visible.forEach(e=>{
+    const {screenX, dist} = e;
+    if(dist < 0.2) return;
+    const spriteH = Math.min(CH*1.4, WALL_H_SCALE / dist);
+    const spriteW = spriteH * 0.75;
+    const sx = screenX - spriteW/2;
+    const sy = HALF_CH - spriteH/2;
+    // Only draw if not fully behind walls
+    const centerRay = Math.floor((screenX/CW) * NUM_RAYS);
+    if(centerRay < 0 || centerRay >= NUM_RAYS) return;
+    if(zBuffer[centerRay] < dist - 0.1) return;
+
+    const alpha = e.dead ? Math.max(0,e.deathTimer/30) : 1;
+    cx.save();
+    cx.globalAlpha = alpha * Math.max(0.2, 1-dist/MAX_DEPTH);
+
+    // Draw ghost sprite based on type using canvas primitives
+    const scale = spriteH / 80;
+    const cx2=screenX, cy2=sy+spriteH*0.38;
+    const bob = Math.sin(frame*0.08 + e.bobOffset)*4*scale;
+
+    if(e.type===0){
+      // Classic ghost — white/translucent
+      drawGhostSprite(cx2, cy2+bob, scale, '#e8f5ff', '#99ccff');
+    } else if(e.type===1){
+      // Ghoul — dark rotting
+      drawGhostSprite(cx2, cy2+bob, scale, '#8899aa', '#445566');
+    } else {
+      // Booger ghost — lime green snotty
+      drawGhostSprite(cx2, cy2+bob, scale, '#39ff14', '#1a8c00');
+    }
+
+    // Flash on damage
+    if(e.flashTimer>0 && e.flashTimer%4<2){
+      cx.globalAlpha=0.7;
+      cx.fillStyle='white';
+      cx.beginPath();cx.ellipse(cx2,cy2,spriteW*0.4,spriteH*0.35,0,0,Math.PI*2);cx.fill();
+    }
+    // HP bar
+    if(!e.dead && e.maxHp>1){
+      const bw=spriteW*0.7, bh=4*scale;
+      const bx=cx2-bw/2, by=sy+3;
+      cx.globalAlpha=0.85;
+      cx.fillStyle='#330000'; cx.fillRect(bx,by,bw,bh);
+      cx.fillStyle='#ff4444'; cx.fillRect(bx,by,(e.hp/e.maxHp)*bw,bh);
+    }
+    cx.restore();
   });
 }
 
-// ─── UPDATE ──────────────────────────────────────────
+function drawGhostSprite(x, y, scale, bodyCol, shadowCol){
+  const s = scale * 28;
+  // Shadow
+  cx.fillStyle='rgba(0,0,0,0.3)';
+  cx.beginPath(); cx.ellipse(x,y+s*1.4,s*0.7,s*0.2,0,0,Math.PI*2); cx.fill();
+  // Body
+  cx.fillStyle=bodyCol;
+  cx.beginPath(); cx.ellipse(x,y,s*0.65,s*0.7,0,0,Math.PI*2); cx.fill();
+  // Wavy bottom
+  cx.fillStyle=bodyCol;
+  cx.beginPath();
+  cx.moveTo(x-s*0.65,y+s*0.2);
+  const wv = Math.sin(frame*0.12)*0.1;
+  cx.bezierCurveTo(x-s*0.4,y+s*(1.1+wv),x,y+s*(0.8-wv),x+s*0.3,y+s*(1.1+wv));
+  cx.bezierCurveTo(x+s*0.5,y+s*(0.8-wv),x+s*0.65,y+s*(1.1+wv),x+s*0.65,y+s*0.2);
+  cx.fill();
+  // Glow
+  cx.strokeStyle=bodyCol;
+  cx.lineWidth=2*scale;
+  cx.globalAlpha*=0.3;
+  cx.beginPath(); cx.ellipse(x,y,s*0.8,s*0.85,0,0,Math.PI*2); cx.stroke();
+  cx.globalAlpha/=0.3;
+  // Eyes
+  cx.fillStyle='#111';
+  cx.beginPath(); cx.ellipse(x-s*0.22,y-s*0.08,s*0.2,s*0.25,0,0,Math.PI*2); cx.fill();
+  cx.beginPath(); cx.ellipse(x+s*0.22,y-s*0.08,s*0.2,s*0.25,0,0,Math.PI*2); cx.fill();
+  cx.fillStyle='#ff0000';
+  cx.beginPath(); cx.ellipse(x-s*0.22,y-s*0.06,s*0.08,s*0.12,0,0,Math.PI*2); cx.fill();
+  cx.beginPath(); cx.ellipse(x+s*0.22,y-s*0.06,s*0.08,s*0.12,0,0,Math.PI*2); cx.fill();
+  // Mouth
+  cx.strokeStyle=shadowCol; cx.lineWidth=scale*1.5;
+  cx.beginPath(); cx.arc(x,y+s*0.18,s*0.22,0.1,Math.PI-0.1); cx.stroke();
+}
+
+// Draw bass guitar crosshair / weapon
+function drawWeapon(){
+  const wox = CW/2 + Math.sin(frame*0.04)*3;
+  const woy = CH - 120 + Math.abs(Math.sin(frame*0.04))*6;
+  // Bass guitar body (simplified side view)
+  const bx=wox, by=woy;
+  // Body shape
+  cx.fillStyle='#2a0000';
+  cx.beginPath();
+  cx.ellipse(bx+30,by+20,55,35,0.3,0,Math.PI*2); cx.fill();
+  cx.fillStyle='#660000';
+  cx.beginPath();
+  cx.ellipse(bx+30,by+20,48,28,0.3,0,Math.PI*2); cx.fill();
+  // Neck
+  cx.fillStyle='#331100';
+  cx.save();
+  cx.translate(bx-10,by+10);
+  cx.rotate(-0.5);
+  cx.fillRect(-6,-80,12,80);
+  cx.restore();
+  // Strings (neon green glow when shooting)
+  const strCol = shootCooldown>8?'#39ff14':'#446644';
+  cx.strokeStyle=strCol; cx.lineWidth=1.5;
+  for(let i=0;i<4;i++){
+    cx.save(); cx.translate(bx-10,by+10); cx.rotate(-0.5);
+    cx.beginPath(); cx.moveTo(-4+i*3,-78); cx.lineTo(-4+i*3,0); cx.stroke();
+    cx.restore();
+  }
+  // Tuning pegs
+  cx.fillStyle='#888';
+  cx.save(); cx.translate(bx-10,by+10); cx.rotate(-0.5);
+  for(let i=0;i<4;i++) { cx.beginPath(); cx.arc(-4+i*3,-78,3,0,Math.PI*2); cx.fill(); }
+  cx.restore();
+  // Pickup (neon)
+  cx.fillStyle='#111';
+  cx.fillRect(bx+5,by+10,24,10);
+  cx.fillStyle= shootCooldown>4?'#39ff14':'#1a4400';
+  cx.fillRect(bx+7,by+12,20,6);
+  // Muzzle flash — musical note
+  if(shootCooldown > 10){
+    drawMusicNote(bx-30, by-50, 28, '#ffe600');
+  }
+
+  // Crosshair
+  const ch_x=CW/2, ch_y=HALF_CH;
+  cx.strokeStyle='rgba(57,255,20,0.8)'; cx.lineWidth=1.5;
+  cx.beginPath(); cx.moveTo(ch_x-18,ch_y); cx.lineTo(ch_x-6,ch_y); cx.stroke();
+  cx.beginPath(); cx.moveTo(ch_x+6,ch_y); cx.lineTo(ch_x+24,ch_y); cx.stroke();
+  cx.beginPath(); cx.moveTo(ch_x,ch_y-14); cx.lineTo(ch_x,ch_y-4); cx.stroke();
+  cx.beginPath(); cx.moveTo(ch_x,ch_y+4); cx.lineTo(ch_x,ch_y+14); cx.stroke();
+  cx.beginPath(); cx.arc(ch_x,ch_y,3,0,Math.PI*2); cx.fill();
+}
+
+function drawMusicNote(x,y,size,col){
+  cx.fillStyle=col;
+  cx.shadowColor=col; cx.shadowBlur=12;
+  // Note head
+  cx.beginPath(); cx.ellipse(x,y+size*0.6,size*0.35,size*0.28,0.4,0,Math.PI*2); cx.fill();
+  // Stem
+  cx.fillRect(x+size*0.3,y-size*0.5,size*0.12,size);
+  // Flag
+  cx.beginPath();
+  cx.moveTo(x+size*0.3,y-size*0.5);
+  cx.quadraticCurveTo(x+size*0.9,y-size*0.2,x+size*0.45,y+size*0.1);
+  cx.fill();
+  cx.shadowBlur=0;
+}
+
+// Floating music notes from bullet hits
+function drawParticles3d(){
+  particles3d = particles3d.filter(p=>p.life>0);
+  particles3d.forEach(p=>{
+    const proj = projectSprite(p.x,p.y);
+    if(!proj) return;
+    const {screenX,dist}=proj;
+    const size = Math.max(4, 28/dist);
+    const alpha = p.life/p.maxLife;
+    cx.save();
+    cx.globalAlpha=alpha*0.9;
+    drawMusicNote(screenX+p.ox*size, HALF_CH-size*2-p.oy*size, size, p.col);
+    cx.restore();
+    p.oy += 0.05;
+    p.life--;
+  });
+}
+
+// Draw pickups (ammo = music note power-up)
+function drawPickups(){
+  pickups.filter(p=>!p.collected).forEach(p=>{
+    const proj=projectSprite(p.x,p.y);
+    if(!proj)return;
+    const {screenX,dist}=proj;
+    if(dist>8)return;
+    const centerRay=Math.floor((screenX/CW)*NUM_RAYS);
+    if(centerRay>=0&&centerRay<NUM_RAYS&&zBuffer[centerRay]<dist-0.1)return;
+    const size=Math.max(6,20/dist);
+    const bob=Math.sin(frame*0.1)*size*0.3;
+    cx.save(); cx.globalAlpha=Math.min(1,0.7+0.3*Math.sin(frame*0.08));
+    drawMusicNote(screenX, HALF_CH-size+bob, size, '#ffe600');
+    // Label
+    cx.font=`${Math.max(10,14/dist)}px 'VT323',monospace`;
+    cx.fillStyle='#ffe600';
+    cx.textAlign='center';
+    cx.fillText('♪ AMMO', screenX, HALF_CH+size*2);
+    cx.restore();
+  });
+}
+
+// HUD damage flash
+function drawFlash(){
+  if(flashTimer>0){
+    cx.fillStyle=`rgba(255,0,0,${flashTimer/30*0.4})`;
+    cx.fillRect(0,0,CW,CH);
+    flashTimer--;
+  }
+  // Ammo-empty flash (purple)
+  if(player.ammo===0 && frame%30<15){
+    cx.fillStyle='rgba(100,0,100,0.12)';
+    cx.fillRect(0,0,CW,CH);
+  }
+}
+
+// ── UPDATE ───────────────────────────────────────────────
 function update(){
-  if(state!=='playing') return;
+  if(state!=='playing')return;
   frame++;
-  bgScroll += 0.5;
-  shootCooldown = Math.max(0,shootCooldown-1);
-  player.flashTimer = Math.max(0,player.flashTimer-1);
+  shootCooldown=Math.max(0,shootCooldown-1);
+  ammoRespawnTimer--;
+  if(ammoRespawnTimer<=0 && pickups.filter(p=>!p.collected).length<2){
+    const cells=[];
+    for(let y=1;y<MAPH-1;y++) for(let x=1;x<MAPW-1;x++){
+      if(MAP[y][x]===0){const dx=x-player.x,dy=y-player.y;if(dx*dx+dy*dy>4)cells.push({x:x+0.5,y:y+0.5});}
+    }
+    if(cells.length){const c=cells[Math.floor(Math.random()*cells.length)];pickups.push({x:c.x,y:c.y,type:'ammo',collected:false});}
+    ammoRespawnTimer=300;
+  }
 
   // Player movement
-  let moving = false;
-  if(keys['ArrowLeft']||keys['KeyA']){ player.x-=player.speed; player.dir=-1; moving=true; }
-  if(keys['ArrowRight']||keys['KeyD']){ player.x+=player.speed; player.dir=1; moving=true; }
-  player.x = Math.max(14, Math.min(W-14, player.x));
+  const spd=MOVE_SPEED*(keys['ShiftLeft']||keys['ShiftRight']?1.6:1);
+  if(keys['ArrowLeft']||keys['KeyA']) player.angle-=ROT_SPEED;
+  if(keys['ArrowRight']||keys['KeyD']) player.angle+=ROT_SPEED;
+  let nx=player.x, ny=player.y;
+  if(keys['ArrowUp']||keys['KeyW']){nx+=Math.cos(player.angle)*spd;ny+=Math.sin(player.angle)*spd;}
+  if(keys['ArrowDown']||keys['KeyS']){nx-=Math.cos(player.angle)*spd*0.7;ny-=Math.sin(player.angle)*spd*0.7;}
+  if(!isWall(nx,player.y)) player.x=nx;
+  if(!isWall(player.x,ny)) player.y=ny;
+  // Space bar hold for auto-shoot
+  if(keys['Space']) tryShoot();
 
-  // Player physics
-  applyPhysics(player);
-
-  // Shots
-  shots = shots.filter(s=>s.x>-20&&s.x<W+20);
-  shots.forEach(s=>{ s.x+=s.vx; });
-
-  // Ghost shots
-  ghostShots = ghostShots.filter(s=>s.x>-20&&s.x<W+20&&s.y<H+20);
-  ghostShots.forEach(s=>{ s.x+=s.vx; s.y+=s.vy; s.vy+=0.1; });
-
-  // Spawn timer
-  pickupSpawnTimer--;
-  if(pickupSpawnTimer<=0 && pickups.length<4){
-    spawnPickup(); pickupSpawnTimer = 180+Math.random()*120;
-  }
-  ghostSpawnTimer--;
-  if(ghostSpawnTimer<=0){
-    spawnGhost(); ghostSpawnTimer = waveConfig().spawnRate;
-  }
-
-  // Update ghosts
-  const cfg = waveConfig();
-  ghosts.forEach(g=>{
-    g.frame++;
-    g.flashTimer=Math.max(0,g.flashTimer-1);
-    // Move toward player horizontally
-    const dx = player.x - g.x;
-    g.vx = Math.sign(dx) * (cfg.ghostSpeed + (g.type===2?0.3:0));
-    g.x += g.vx;
-    // Ghost jumps occasionally to reach platforms
-    g.jumpTimer--;
-    if(g.jumpTimer<=0 && g.onGround){
-      g.vy = -10; g.onGround=false;
-      g.jumpTimer = 80+Math.floor(Math.random()*100);
-    }
-    applyPhysics(g);
-    // Ghost shooting
-    g.shootTimer--;
-    if(g.shootTimer<=0){
-      g.shootTimer=g.shootFreq;
-      const ang = Math.atan2(player.y-g.y, player.x-g.x);
-      const spd = 3.5 + wave*0.2;
-      ghostShots.push({x:g.x,y:g.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd-1});
+  // Pickup collection
+  pickups.forEach(p=>{
+    if(p.collected)return;
+    const dx=p.x-player.x,dy=p.y-player.y;
+    if(dx*dx+dy*dy<0.4){
+      p.collected=true;
+      player.ammo=Math.min(player.maxAmmo,player.ammo+5);
+      updateHUD();
     }
   });
 
-  // Pickups frame tick
-  pickups.forEach(p=>p.frame++);
-
-  // Particles
-  particles = particles.filter(p=>p.life>0);
-  particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.life-=p.decay; });
-
-  // ── Collisions ──
-  // Shots vs ghosts
-  shots.forEach(s=>{
-    if(s.dead) return;
-    ghosts.forEach(g=>{
-      if(Math.abs(s.x-g.x)<22 && Math.abs(s.y-g.y)<28){
-        s.dead=true;
-        g.hp--;
-        g.flashTimer=12;
-        spawnParticles(g.x,g.y,'#c8e8ff',8);
-        if(g.hp<=0){
-          g.dead=true;
-          spawnParticles(g.x,g.y,'#ffffff',16);
-          score += 50*(g.type)*(1+Math.floor(wave/3));
+  // Bullets
+  bullets=bullets.filter(b=>b.life>0);
+  bullets.forEach(b=>{
+    b.x+=b.dx; b.y+=b.dy; b.life--;
+    if(isWall(b.x,b.y)){b.life=0;return;}
+    // Hit enemy check
+    enemies.forEach(e=>{
+      if(e.dead)return;
+      const dx=e.x-b.x,dy=e.y-b.y;
+      if(dx*dx+dy*dy<0.3){
+        b.life=0;
+        e.hp--;
+        e.flashTimer=12;
+        // Spawn music note particle
+        particles3d.push({x:e.x,y:e.y,ox:(Math.random()-0.5)*2,oy:0,life:40,maxLife:40,col:['#ffe600','#ff88ff','#39ff14'][e.type]});
+        if(e.hp<=0){
+          e.dead=true; e.deathTimer=30;
+          score+=50*(e.type+1)*(1+Math.floor(wave/3));
           hiScore=Math.max(hiScore,score);
+          waveKills++;
           updateHUD();
         }
       }
     });
   });
-  shots = shots.filter(s=>!s.dead);
-  ghosts = ghosts.filter(g=>!g.dead);
 
-  // Ghost shots vs player
-  if(player.flashTimer<=0){
-    ghostShots.forEach(s=>{
-      if(s.dead) return;
-      if(Math.abs(s.x-player.x)<16 && Math.abs(s.y-player.y)<22){
-        s.dead=true;
-        player.hp--;
-        player.flashTimer=60;
-        spawnParticles(player.x,player.y,'#ff4444',10);
-        updateHUD();
-        if(player.hp<=0){ hiScore=Math.max(hiScore,score); state='dead'; showPauseBtn(false); }
-      }
-    });
-  }
-  ghostShots = ghostShots.filter(s=>!s.dead);
-
-  // Ghost contact vs player
-  if(player.flashTimer<=0){
-    ghosts.forEach(g=>{
-      if(Math.abs(g.x-player.x)<24 && Math.abs(g.y-player.y)<30){
-        player.hp--;
-        player.flashTimer=90;
-        spawnParticles(player.x,player.y,'#ff4444',10);
-        updateHUD();
-        if(player.hp<=0){ hiScore=Math.max(hiScore,score); state='dead'; showPauseBtn(false); }
-      }
-    });
-  }
-
-  // Pickups vs player
-  pickups.forEach(p=>{
-    if(p.collected) return;
-    if(Math.abs(p.x-player.x)<24 && Math.abs(p.y-player.y)<28){
-      p.collected=true;
-      if(p.type==='beer'){
-        player.hp=Math.min(MAX_HP,player.hp+1);
-        spawnParticles(p.x,p.y,'#ffe600',12);
-        score+=10;
-      } else {
-        player.hp=Math.min(MAX_HP,player.hp+2);
-        spawnParticles(p.x,p.y,'#ffcc00',14);
-        score+=20;
-      }
+  // Enemy update
+  enemies.forEach(e=>{
+    if(e.dead){e.deathTimer=Math.max(0,e.deathTimer-1);return;}
+    if(e.flashTimer)e.flashTimer=Math.max(0,e.flashTimer-1);
+    // Move toward player
+    const dx=player.x-e.x, dy=player.y-e.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist>0.5){
+      const nx2=e.x+dx/dist*e.speed;
+      const ny2=e.y+dy/dist*e.speed;
+      if(!isWall(nx2,e.y))e.x=nx2;
+      if(!isWall(e.x,ny2))e.y=ny2;
+    }
+    // Enemy attacks player on close contact
+    if(dist<0.6 && frame%60===0){
+      player.hp--;
+      flashTimer=25;
       updateHUD();
+      if(player.hp<=0){hiScore=Math.max(hiScore,score);state='dead';showPBtn(false);}
+    }
+    // Enemy ranged attack (ghoul only) — spits green blob
+    if(e.type===1){
+      e.shootTimer--;
+      if(e.shootTimer<=0){
+        e.shootTimer=e.shootFreq;
+        if(dist<6){
+          const ang=Math.atan2(dy,dx);
+          // Enemy bullet — handled as fake damage check near player
+          // Simple: if enemy is facing player and close enough, deal damage
+          if(dist<4 && Math.abs(ang-player.angle)<0.8){
+            player.hp=Math.max(0,player.hp-1);
+            flashTimer=20;
+            updateHUD();
+            if(player.hp<=0){hiScore=Math.max(hiScore,score);state='dead';showPBtn(false);}
+          }
+        }
+      }
     }
   });
-  pickups = pickups.filter(p=>!p.collected);
 
-  // Wave clear check — every 8 ghosts killed per wave triggers next wave
-  // (tracked via score milestones to keep it simple)
-  const waveKillTarget = wave * 8;
-  const killsThisWave = Math.floor(score / (50*(1+Math.floor(wave/3))));
-  if(killsThisWave >= waveKillTarget && ghosts.length===0 && state==='playing'){
-    state='nextwave';
-    showPauseBtn(false);
-    document.getElementById('g-start').textContent='NEXT WAVE';
+  // Remove fully-dead enemies
+  enemies=enemies.filter(e=>!e.dead||e.deathTimer>0);
+
+  // Wave clear
+  if(waveKills>=waveTarget && enemies.every(e=>e.dead||e.deathTimer===0)){
+    score+=200*wave; updateHUD();
+    state='nextwave'; showPBtn(false);
+    document.getElementById('fps-start').textContent='NEXT WAVE';
   }
 }
 
-// ─── DRAW ────────────────────────────────────────────
-function draw(){
-  cx.clearRect(0,0,W,H);
-  drawBG();
-
-  if(state==='title'){ drawTitle(); return; }
-  if(state==='paused'){ drawBGOnly(); drawPauseOverlay(); return; }
-
-  // Platforms
-  PLATFORMS.forEach(drawPlatform);
-
-  // Pickups
-  pickups.forEach(p=>{
-    if(p.type==='beer') drawBeer(p.x,p.y,p.frame);
-    else drawPizza(p.x,p.y,p.frame);
-  });
-
-  // Ghost shots
-  ghostShots.forEach(drawGhostShot);
-
-  // Player shots
-  shots.forEach(drawShot);
-
-  // Ghosts
-  ghosts.forEach(drawGhostEnemy);
-
-  // Player
-  const moving = keys['ArrowLeft']||keys['ArrowRight']||keys['KeyA']||keys['KeyD'];
-  drawSlimer(player.x, player.y, player.dir, moving?frame:0, player.flashTimer>0, player.hp);
-
-  // Particles
-  particles.forEach(p=>{
-    cx.save(); cx.globalAlpha=p.life*0.9;
-    cx.fillStyle=p.col;
-    cx.beginPath(); cx.arc(p.x,p.y,p.r,0,Math.PI*2); cx.fill();
-    cx.restore();
-  });
-
-  // Health pickups floating labels
-  pickups.forEach(p=>{
-    const label = p.type==='beer'?'+1 HP':'+2 HP';
-    const col = p.type==='beer'?'#ffe600':'#ffcc00';
-    txt(label, p.x, p.y-22, 15, col, 'center');
-  });
-
-  if(state==='dead') drawGameOver();
-  if(state==='nextwave') drawWaveClear();
-}
-
+// ── OVERLAY SCREENS ──────────────────────────────────────
 function drawTitle(){
-  cx.fillStyle='rgba(2,8,12,0.88)'; cx.fillRect(0,0,W,H);
-  // draw little ghost trio
-  [W/2-80, W/2, W/2+80].forEach((gx,i)=>{
-    const g={x:gx,y:H/2-80,frame:frame+i*20,type:i+1,hp:1,maxHp:1,flashTimer:0};
-    drawGhostEnemy(g);
+  cx.fillStyle='#020008'; cx.fillRect(0,0,CW,CH);
+  // Cyberpunk city silhouette
+  cx.fillStyle='#050510';
+  [20,80,140,200,260,320,380,440,500,560,600].forEach((bx,i)=>{
+    const bh=60+i*15+Math.sin(i*1.3)*40;
+    cx.fillRect(bx,CH-bh,40+i*5,bh);
+    // windows
+    cx.fillStyle='rgba(57,255,20,0.08)';
+    for(let wy=CH-bh+8;wy<CH-10;wy+=14){
+      for(let wx=bx+4;wx<bx+36;wx+=10){
+        if(Math.sin(wx*3.7+wy*2.1)>0.1)cx.fillRect(wx,wy,6,8);
+      }
+    }
+    cx.fillStyle='#050510';
   });
-  txt('GOO-PUNK HUNTER', W/2, H/2+10, 46, '#39ff14', 'center');
-  txt('YOU ARE A SLIMER. HUNT GHOSTS.', W/2, H/2+46, 22, '#ff6a00', 'center');
-  txt('COLLECT 🍺 BEER & 🍕 PIZZA FOR HEALTH', W/2, H/2+74, 20, '#ffe600', 'center');
-  txt(frame%50<25?'PRESS SPACE / START':'', W/2, H/2+108, 22, 'rgba(57,255,20,0.9)', 'center');
-  txt('A/D MOVE  ·  W JUMP  ·  SPACE SHOOT', W/2, H/2+134, 17, 'rgba(255,255,255,0.35)', 'center');
+  // Neon fog
+  cx.fillStyle='rgba(57,255,20,0.03)';
+  cx.fillRect(0,CH/2-40,CW,80);
+  // Ghost silhouettes
+  cx.globalAlpha=0.15;
+  [[100,120],[320,100],[520,130]].forEach(([gx,gy])=>{
+    cx.fillStyle='#ffffff';
+    cx.beginPath();cx.ellipse(gx,gy,22,20,0,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.moveTo(gx-22,gy+5);cx.bezierCurveTo(gx-12,gy+30,gx,gy+22,gx+12,gy+30);cx.bezierCurveTo(gx+18,gy+22,gx+22,gy+30,gx+22,gy+5);cx.fill();
+  });
+  cx.globalAlpha=1;
+  drawText('BASS BLASTER 3000',CW/2,CH/2-50,38,'#39ff14');
+  drawText('GHOSTBUSTERS CYBERPUNK CITY',CW/2,CH/2-12,20,'#cc44ff');
+  drawText('SHOOT GHOSTS WITH MUSICAL NOTES',CW/2,CH/2+20,18,'#ff6a00');
+  drawText('♪ COLLECT AMMO PICKUPS',CW/2,CH/2+48,16,'#ffe600');
+  drawText(frame%60<30?'PRESS SPACE / START':'',CW/2,CH/2+84,20,'#39ff14');
+  drawText('← → TURN  ·  W/S MOVE  ·  SPACE SHOOT  ·  P PAUSE',CW/2,CH/2+110,14,'rgba(255,255,255,0.35)');
 }
 
-function drawBGOnly(){
-  PLATFORMS.forEach(drawPlatform);
-  pickups.forEach(p=>{ if(p.type==='beer') drawBeer(p.x,p.y,p.frame); else drawPizza(p.x,p.y,p.frame); });
-  ghosts.forEach(drawGhostEnemy);
-  drawSlimer(player.x,player.y,player.dir,0,false,player.hp);
+function drawPauseScreen(){
+  cx.fillStyle='rgba(2,0,8,0.86)'; cx.fillRect(0,0,CW,CH);
+  drawText('PAUSED',CW/2,CH/2,48,'#39ff14');
+  drawText('PRESS P TO RESUME',CW/2,CH/2+44,20,'rgba(255,255,255,0.5)');
 }
 
-function drawPauseOverlay(){
-  cx.fillStyle='rgba(2,8,12,0.8)'; cx.fillRect(0,0,W,H);
-  txt('PAUSED', W/2, H/2, 54, '#39ff14', 'center');
-  txt('PRESS P OR CLICK RESUME', W/2, H/2+44, 22, 'rgba(255,255,255,0.5)', 'center');
-}
-
-function drawGameOver(){
-  cx.fillStyle='rgba(2,8,12,0.9)'; cx.fillRect(0,0,W,H);
-  txt('YOU GOT SLIMED!!', W/2, H/2-40, 48, '#ff4444', 'center');
-  txt('SCORE: '+score, W/2, H/2+10, 34, '#ff6a00', 'center');
-  txt('HI SCORE: '+hiScore, W/2, H/2+48, 26, '#ffe600', 'center');
-  txt(frame%50<25?'PRESS SPACE / RESTART':'', W/2, H/2+88, 22, 'rgba(57,255,20,0.85)', 'center');
+function drawDeadScreen(){
+  cx.fillStyle='rgba(20,0,0,0.92)'; cx.fillRect(0,0,CW,CH);
+  drawText('YOU DIED',CW/2,CH/2-44,52,'#ff4444');
+  drawText('SCORE: '+score,CW/2,CH/2+8,32,'#ff6a00');
+  drawText('HI: '+hiScore,CW/2,CH/2+44,24,'#ffe600');
+  drawText(frame%60<30?'PRESS SPACE / RESTART':'',CW/2,CH/2+84,20,'rgba(57,255,20,0.85)');
 }
 
 function drawWaveClear(){
-  cx.fillStyle='rgba(2,8,12,0.88)'; cx.fillRect(0,0,W,H);
-  txt('WAVE '+(wave)+' CLEARED!', W/2, H/2-30, 48, '#39ff14', 'center');
-  txt('+100 BONUS PTS', W/2, H/2+16, 28, '#ffe600', 'center');
-  score = Math.min(score+100, 999999);
-  txt(frame%50<25?'PRESS SPACE / NEXT WAVE':'', W/2, H/2+60, 22, '#ff6a00', 'center');
-  updateHUD();
+  cx.fillStyle='rgba(0,2,8,0.9)'; cx.fillRect(0,0,CW,CH);
+  drawText('WAVE '+(wave)+' CLEAR!',CW/2,CH/2-36,46,'#39ff14');
+  drawText('SCORE: '+score,CW/2,CH/2+10,28,'#ff6a00');
+  drawText(frame%60<30?'PRESS SPACE / NEXT WAVE':'',CW/2,CH/2+58,20,'#ffe600');
 }
 
-// ─── MAIN LOOP ───────────────────────────────────────
+function drawText(txt,x,y,size,col){
+  cx.font=size+"px 'VT323',monospace";
+  cx.fillStyle=col||'#39ff14';
+  cx.textAlign='center';
+  if(col==='#39ff14'||col==='#39FF14'){cx.shadowColor='#39ff14';cx.shadowBlur=8;}
+  cx.fillText(txt,x,y);
+  cx.shadowBlur=0;
+  cx.textAlign='left';
+}
+
+// ── MAIN LOOP ────────────────────────────────────────────
 function loop(){
+  cx.clearRect(0,0,CW,CH);
+  if(state==='title'){drawTitle();requestAnimationFrame(loop);return;}
+  if(state==='paused'){drawScene();drawEnemies();drawPickups();drawParticles3d();drawWeapon();drawPauseScreen();requestAnimationFrame(loop);return;}
   update();
-  draw();
+  drawScene();
+  drawEnemies();
+  drawPickups();
+  drawParticles3d();
+  drawWeapon();
+  drawFlash();
+  if(state==='dead') drawDeadScreen();
+  if(state==='nextwave') drawWaveClear();
   requestAnimationFrame(loop);
 }
 loop();
@@ -1813,11 +1981,9 @@ loop();
       <div class="section-divider"></div>
     </div>
 
-    <div class="no-shows">
-      <p>◇ CHECK <span>@SLIMERSBAND</span> FOR UPCOMING SHOWS ◇</p>
-      <p style="margin-top:12px; font-size:18px; opacity:0.5;">LOADING... UPCOMING SLIME...</p>
-      <div style="margin-top: 32px;">
-        <a href="https://www.instagram.com/slimersband/" target="_blank" class="btn btn-outline">FOLLOW ON INSTAGRAM</a>
+    <div id="shows-content" style="min-height:120px;">
+      <div id="shows-loading" style="text-align:center; font-family:'VT323',monospace; font-size:22px; color:rgba(57,255,20,0.5); letter-spacing:3px; padding:32px 0;">
+        ◇ LOADING UPCOMING SLIME... ◇
       </div>
     </div>
 
@@ -1831,33 +1997,118 @@ loop();
   </div>
 </section>
 
-<!-- LIVE EXPERIENCE -->
-<section class="live" id="live">
-  <div class="live-inner">
-    <div class="section-header">
-      <span class="section-tag">◇ THE LIVE SHOW ◇</span>
-      <h2 class="section-title">WITNESS THE<br>SLIME</h2>
-      <div class="section-divider"></div>
-    </div>
-    <div class="live-grid">
-      <div class="live-card">
-        <span class="live-icon">🎭</span>
-        <h3>ORIGINAL SKITS</h3>
-        <p>Between songs, between worlds. Slimers' live shows are punctuated by fully original, totally unhinged comedy skits. Ghostbusters lore meets Florida swamp energy. You never know what's coming next.</p>
-      </div>
-      <div class="live-card">
-        <span class="live-icon">👻</span>
-        <h3>GHOSTBUSTERS ENERGY</h3>
-        <p>Every show is a haunting. Expect costumes, props, references, and an unmistakable reverence for the greatest paranormal investigation team of all time. Except these ones play bass and drums.</p>
-      </div>
-      <div class="live-card">
-        <span class="live-icon">⚡</span>
-        <h3>RAW PUNK POWER</h3>
-        <p>Beneath the slime, it's a proper two-piece punk wrecking crew. Fast songs, loud guitars, sweat, and chaos. No setlist survives contact with a Slimers show intact.</p>
-      </div>
-    </div>
-  </div>
-</section>
+<script>
+(function() {
+  // Try to fetch Instagram bio via a CORS proxy to scrape show dates
+  // Falls back gracefully if blocked (Instagram blocks most scraping)
+  const FALLBACK_BIO = "Goo-punk for yolk folk from Lake Worth FL ◇◇Upcoming Slime◇◇ Loading...";
+  const IG_URL = "https://www.instagram.com/slimersband/";
+
+  function renderShows(bioText) {
+    const container = document.getElementById('shows-content');
+    const loading = document.getElementById('shows-loading');
+    if (loading) loading.remove();
+
+    // Parse any date-like patterns from bio text
+    // Pattern: month day, optional year, optional venue/location info
+    const datePatterns = [
+      /(\b(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b[\s\w,@&!.'-]{3,60})/gi,
+      /(\d{1,2}[\/\-]\d{1,2}(?:[\/\-]\d{2,4})?[\s\w,@&!.'-]{0,60})/gi,
+    ];
+
+    let shows = [];
+    let combined = bioText || '';
+    datePatterns.forEach(pat => {
+      let m;
+      while ((m = pat.exec(combined)) !== null) {
+        const s = m[1].trim();
+        if (s.length > 4 && !shows.includes(s)) shows.push(s);
+      }
+    });
+
+    // Also split on ◇ or newlines for structured bio lines
+    const lines = combined.split(/[\n◇◆•·|]+/).map(l => l.trim()).filter(l => l.length > 5);
+
+    if (shows.length > 0) {
+      // Render parsed dates
+      let html = '<div style="max-width:800px; margin:0 auto;">';
+      shows.forEach(show => {
+        html += `<div class="show-item">
+          <div class="show-info">
+            <h4 style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#fff;letter-spacing:2px;">${show}</h4>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    } else if (lines.length > 1) {
+      // Render bio lines as info blocks
+      let html = `<div style="max-width:800px;margin:0 auto;">`;
+      // Show the "upcoming slime" section of bio if present
+      const upcomingIdx = lines.findIndex(l => /upcoming|slime|show|gig|tour/i.test(l));
+      const displayLines = upcomingIdx >= 0 ? lines.slice(upcomingIdx) : lines;
+      displayLines.slice(0, 8).forEach(line => {
+        const isDate = /\d{1,2}[\/\-]|\bjan\b|\bfeb\b|\bmar\b|\bapr\b|\bmay\b|\bjun\b|\bjul\b|\baug\b|\bsep\b|\boct\b|\bnov\b|\bdec\b/i.test(line);
+        const color = isDate ? 'var(--slime)' : 'rgba(255,255,255,0.7)';
+        html += `<div style="padding:12px 0; border-bottom:1px solid rgba(57,255,20,0.12); font-family:'VT323',monospace; font-size:22px; letter-spacing:2px; color:${color};">${line}</div>`;
+      });
+      html += `<div style="margin-top:24px; text-align:center;">
+        <a href="${IG_URL}" target="_blank" class="btn btn-outline">VIEW ALL ON INSTAGRAM ↗</a>
+      </div></div>`;
+      container.innerHTML = html;
+    } else {
+      renderFallback(container);
+    }
+  }
+
+  function renderFallback(container) {
+    // Known bio text from our research + friendly message
+    container.innerHTML = `
+      <div style="max-width:800px; margin:0 auto;">
+        <div style="background:rgba(57,255,20,0.06); border:1px solid rgba(57,255,20,0.3); padding:24px 32px; margin-bottom:20px;">
+          <div style="font-family:'VT323',monospace; font-size:20px; letter-spacing:3px; color:var(--slime); margin-bottom:12px;">◇ FROM @SLIMERSBAND ◇</div>
+          <div style="font-family:'Special Elite',cursive; font-size:17px; line-height:1.8; color:rgba(255,255,255,0.75);">
+            <p><strong style="color:var(--slime);">Goo-punk for yolk folk from Lake Worth FL</strong></p>
+            <p style="margin-top:10px;">◇◇ Upcoming Slime ◇◇</p>
+            <p style="margin-top:10px; opacity:0.6;">Check Instagram for the latest show dates — Instagram restricts live scraping from the browser, so head directly to the source for up-to-date slime schedules.</p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:20px;">
+          <a href="${IG_URL}" target="_blank" class="btn btn-primary" style="font-size:18px;">SEE SHOWS ON INSTAGRAM ↗</a>
+        </div>
+      </div>`;
+  }
+
+  // Attempt fetch via allorigins CORS proxy
+  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(IG_URL)}`;
+  fetch(proxy, { signal: AbortSignal.timeout(6000) })
+    .then(r => r.json())
+    .then(data => {
+      const html = data.contents || '';
+      // Extract bio from Instagram's JSON-LD or meta tags
+      let bio = '';
+      // Try meta description
+      const metaMatch = html.match(/<meta[^>]+property="og:description"[^>]+content="([^"]+)"/i)
+        || html.match(/<meta[^>]+name="description"[^>]+content="([^"]+)"/i);
+      if (metaMatch) bio = metaMatch[1];
+      // Try JSON LD biography field
+      if (!bio) {
+        const bioMatch = html.match(/"biography":"([^"]+)"/);
+        if (bioMatch) bio = bioMatch[1].replace(/\\n/g, '\n');
+      }
+      if (bio && bio.length > 5) {
+        renderShows(bio);
+      } else {
+        renderFallback(document.getElementById('shows-content'));
+      }
+    })
+    .catch(() => {
+      const c = document.getElementById('shows-content');
+      if (c) renderFallback(c);
+    });
+})();
+</script>
+
 
 <div class="slime-sep"></div>
 
@@ -1908,8 +2159,8 @@ loop();
       <ul>
         <li><a href="#about">About</a></li>
         <li><a href="#music">Music</a></li>
+        <li><a href="#game">Play</a></li>
         <li><a href="#shows">Shows</a></li>
-        <li><a href="#live">Live</a></li>
         <li><a href="#gallery">Gallery</a></li>
       </ul>
     </div>
@@ -1925,7 +2176,7 @@ loop();
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 SLIMERS · <span>GOO-PUNK FOR YOLK FOLK</span> · LAKE WORTH, FL · WHO YA GONNA CALL?</p>
+    <p>© 2026 SLIMERS · <span>GOO-PUNK FOR YOLK FOLK</span> · LAKE WORTH, FL · WHO YA GONNA CALL?</p>
   </div>
 </footer>
 
@@ -1953,7 +2204,7 @@ loop();
     });
   }, { threshold: 0.1 });
 
-  document.querySelectorAll('.live-card, .member-card, .info-block, .show-item').forEach(el => {
+  document.querySelectorAll('.member-card, .info-block, .show-item, .gallery-item').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(20px)';
     el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
