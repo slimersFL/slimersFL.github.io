@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d0a">
+<title>SLIMERS — Two-Piece Ghostbusters-Themed Punk from Lake Worth, FL</title>
+<meta name="description" content="SLIMERS — slimepunk duo from the gargling bogs of the Everglades. Listen to the album, catch upcoming shows, join the Goo News, and bust ghosts in our 8-bit mini-game.">
+
+<!-- Open Graph for link previews -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SLIMERS">
+<meta property="og:title" content="SLIMERS — Slimepunk from Lake Worth, FL">
+<meta property="og:description" content="Two-piece punk, three parts slime. Listen to the new album, catch a show, bust some ghosts.">
+<meta property="og:image" content="img/og.jpg">
+<meta property="og:url" content="https://slimersband.com/">
+
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik+Mono+One&family=Permanent+Marker&family=Special+Elite&family=Archivo+Black&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== SVG FILTERS (goo effect & grain) ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo"/>
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+    </filter>
+    <filter id="goo-strong">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11" result="goo"/>
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ===== DRAWER TOGGLE ===== -->
+<button id="drawerToggle" class="drawer-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="drawer">
+  <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+  <span class="drawer-toggle-label">MENU</span>
+</button>
+
+<!-- ===== DRAWER ===== -->
+<aside id="drawer" class="drawer" aria-label="Primary navigation" aria-hidden="true">
+  <div class="drawer-inner">
+    <div class="drawer-header">
+      <span class="drawer-title">SLIMERS</span>
+      <button id="drawerClose" class="drawer-close" aria-label="Close navigation menu">✕</button>
+    </div>
+    <nav class="drawer-nav">
+      <a href="#home" class="drawer-link" data-nav>Home</a>
+      <a href="#music" class="drawer-link" data-nav>Music</a>
+      <a href="#shows" class="drawer-link" data-nav>Upcoming Slime</a>
+      <a href="#gallery" class="drawer-link" data-nav>Gallery</a>
+      <a href="#recognition" class="drawer-link" data-nav>Recognition</a>
+      <a href="#goonews" class="drawer-link" data-nav>Goo News</a>
+      <a href="#contact" class="drawer-link" data-nav>Contact</a>
+      <a href="#contact?booking=1" class="drawer-link drawer-cta" data-nav data-booking>★ BOOK SLIMERS ★</a>
+      <a href="#game" class="drawer-link" data-nav>Play the Game</a>
+    </nav>
+    <div class="drawer-toggles">
+      <label class="switch-row">
+        <span>Reduce motion</span>
+        <span class="switch"><input type="checkbox" id="reduceMotionToggle"><span class="slider"></span></span>
+      </label>
+    </div>
+    <div class="drawer-socials" aria-label="Social links">
+      <a href="https://instagram.com/slimerband" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+      <a href="https://youtube.com/@slimersmusic" target="_blank" rel="noopener" aria-label="YouTube">YT</a>
+      <a href="https://slimersmusic.bandcamp.com/album/slimers" target="_blank" rel="noopener" aria-label="Bandcamp">BC</a>
+    </div>
+  </div>
+</aside>
+<div id="drawerScrim" class="drawer-scrim" tabindex="-1"></div>
+
+<!-- ===== FLOATING PROTON PACK LAUNCHER ===== -->
+<button id="gameLauncher" class="game-launcher" aria-label="Jump to the mini-game">
+  <svg viewBox="0 0 64 64" aria-hidden="true" class="proton-pack-icon">
+    <rect x="14" y="16" width="36" height="36" rx="4" fill="#1a1d1a" stroke="#7bff3a" stroke-width="2"/>
+    <circle cx="32" cy="38" r="9" fill="none" stroke="#d1121b" stroke-width="2"/>
+    <circle cx="32" cy="31" r="2" fill="#ffea00"/>
+    <circle cx="26" cy="42" r="2" fill="#ffea00"/>
+    <circle cx="38" cy="42" r="2" fill="#ffea00"/>
+    <rect x="20" y="21" width="6" height="3" fill="#7bff3a"/>
+    <rect x="38" y="21" width="6" height="3" fill="#7bff3a"/>
+    <rect x="49" y="24" width="11" height="3" fill="#888" transform="rotate(20 49 24)"/>
+  </svg>
+  <span class="launcher-label">BUST GHOSTS</span>
+</button>
+
+<!-- ===== TOP SLIME DRIP ===== -->
+<div class="global-drip" aria-hidden="true">
+  <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <g filter="url(#goo-strong)">
+      <rect x="0" y="0" width="1440" height="28" fill="var(--slime)"/>
+      <ellipse cx="80" cy="40" rx="12" ry="32" fill="var(--slime)"/>
+      <ellipse cx="220" cy="54" rx="10" ry="48" fill="var(--slime)"/>
+      <ellipse cx="360" cy="38" rx="13" ry="28" fill="var(--slime)"/>
+      <ellipse cx="500" cy="65" rx="11" ry="58" fill="var(--slime)"/>
+      <ellipse cx="640" cy="42" rx="9" ry="32" fill="var(--slime)"/>
+      <ellipse cx="780" cy="58" rx="13" ry="50" fill="var(--slime)"/>
+      <ellipse cx="920" cy="38" rx="11" ry="30" fill="var(--slime)"/>
+      <ellipse cx="1060" cy="62" rx="12" ry="54" fill="var(--slime)"/>
+      <ellipse cx="1200" cy="44" rx="10" ry="36" fill="var(--slime)"/>
+      <ellipse cx="1340" cy="58" rx="13" ry="48" fill="var(--slime)"/>
+    </g>
+  </svg>
+</div>
+
+<main id="main">
+
+<!-- ===== HERO ===== -->
+<section id="home" class="hero" aria-label="Home">
+  <div class="hero-grain" aria-hidden="true"></div>
+  <div class="hero-inner">
+
+    <div class="hero-eyebrow">
+      <span class="eyebrow-tag">◎ PRESENTED LIVE FROM THE EVERGLADES ◎</span>
+    </div>
+
+    <h1 class="hero-title" aria-label="Slimers">
+      <span class="title-row">
+        <span class="letter" style="--i:0">S</span><span class="letter" style="--i:1">L</span><span class="letter" style="--i:2">I</span><span class="letter" style="--i:3">M</span><span class="letter" style="--i:4">E</span><span class="letter" style="--i:5">R</span><span class="letter" style="--i:6">S</span>
+      </span>
+    </h1>
+
+    <div class="hero-dripline" aria-hidden="true">
+      <svg viewBox="0 0 800 140" preserveAspectRatio="none">
+        <g filter="url(#goo-strong)">
+          <rect x="0" y="0" width="800" height="28" fill="var(--slime)"/>
+          <ellipse cx="60" cy="50" rx="14" ry="38" fill="var(--slime)"/>
+          <ellipse cx="160" cy="62" rx="10" ry="52" fill="var(--slime)"/>
+          <ellipse cx="260" cy="42" rx="12" ry="32" fill="var(--slime)"/>
+          <ellipse cx="360" cy="70" rx="14" ry="62" fill="var(--slime)"/>
+          <ellipse cx="460" cy="48" rx="9" ry="40" fill="var(--slime)"/>
+          <ellipse cx="560" cy="65" rx="13" ry="58" fill="var(--slime)"/>
+          <ellipse cx="660" cy="42" rx="11" ry="35" fill="var(--slime)"/>
+          <ellipse cx="760" cy="58" rx="14" ry="50" fill="var(--slime)"/>
+        </g>
+      </svg>
+    </div>
+
+    <p class="hero-tag">TWO-PIECE PUNK · LAKE WORTH, FL · <span class="hero-tag-accent">SLIME FOREVER</span></p>
+
+    <div class="hero-choruses">
+      <span class="chorus-badge">"IF YOU SEE SOMETHING, SAY SOMETHING"</span>
+      <span class="chorus-badge">"PARTYING WITH SLIMER"</span>
+    </div>
+
+    <div class="hero-ctas">
+      <a href="#music" class="btn btn-primary" data-nav>▶ LISTEN NOW</a>
+      <a href="#shows" class="btn btn-ghost" data-nav>UPCOMING SLIME</a>
+      <a href="#contact?booking=1" class="btn btn-danger" data-nav data-booking>BOOK US</a>
+    </div>
+
+    <div class="hero-socials" aria-label="Social media">
+      <a href="https://instagram.com/slimerband" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram @slimerband">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.24 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.24-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85c.05-1.17.24-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.89 5.89 0 0 0-2.13 1.39A5.89 5.89 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.78.72 1.44 1.39 2.12a5.88 5.88 0 0 0 2.12 1.39c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.89 5.89 0 0 0 2.13-1.39 5.89 5.89 0 0 0 1.39-2.12c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.88 5.88 0 0 0-1.39-2.13A5.89 5.89 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32Zm0 10.15a4 4 0 1 1 0-7.99 4 4 0 0 1 0 7.99Zm6.4-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0Z"/></svg>
+        <span>@slimerband</span>
+      </a>
+      <a href="https://youtube.com/@slimersmusic" target="_blank" rel="noopener" class="social-icon" aria-label="YouTube @slimersmusic">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z"/></svg>
+        <span>@slimersmusic</span>
+      </a>
+      <a href="https://slimersmusic.bandcamp.com/album/slimers" target="_blank" rel="noopener" class="social-icon" aria-label="Bandcamp">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M0 18.75h13.125L24 5.25H10.875L0 18.75Z"/></svg>
+        <span>Bandcamp</span>
+      </a>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <span>SCROLL</span>
+      <svg viewBox="0 0 20 30" width="16" height="26"><path d="M10 0 V22 M3 15 L10 25 L17 15" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== MUSIC ===== -->
+<section id="music" class="section music-section" aria-label="Music">
+  <div class="section-header">
+    <h2 class="section-title">MUSIC</h2>
+    <p class="section-sub">12 TRACKS · 22 MINUTES · 0 BRAINS</p>
+  </div>
+
+  <div class="album-layout">
+    <div class="album-cover-wrap">
+      <div class="album-cover" aria-label="Slimers album cover">
+        <div class="album-cover-inner">
+          <div class="album-slime-blob"></div>
+          <div class="album-cover-text">
+            <span class="album-cover-title">SLIMERS</span>
+            <span class="album-cover-subtitle">SLIMERS</span>
+          </div>
+        </div>
+      </div>
+      <div class="album-meta">
+        <div class="album-meta-label">ALBUM</div>
+        <div class="album-meta-name">SLIMERS</div>
+        <div class="album-meta-date">RELEASED DEC 12, 2025</div>
+        <div class="album-meta-credits">J-Slime: drums/vox · T-Slime: bass/vox/toy piano/sax</div>
+        <a href="https://slimersmusic.bandcamp.com/album/slimers" target="_blank" rel="noopener" class="btn btn-primary btn-sm">BUY ON BANDCAMP →</a>
+      </div>
+    </div>
+
+    <div class="player">
+      <div class="player-display">
+        <div class="player-now-label">NOW PLAYING</div>
+        <div class="player-now-title" id="playerTitle">— select a track —</div>
+        <div class="player-controls">
+          <button class="player-btn" id="playerPrev" aria-label="Previous track">⏮</button>
+          <button class="player-btn player-btn-main" id="playerPlay" aria-label="Play / pause">▶</button>
+          <button class="player-btn" id="playerNext" aria-label="Next track">⏭</button>
+          <div class="player-time" id="playerTime">0:00 / 0:00</div>
+        </div>
+        <div class="player-progress" id="playerProgressWrap">
+          <div class="player-progress-bar" id="playerProgress"></div>
+        </div>
+      </div>
+      <ol class="tracklist" id="tracklist"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SHOWS ===== -->
+<section id="shows" class="section shows-section" aria-label="Upcoming shows">
+  <div class="section-header">
+    <h2 class="section-title">UPCOMING SLIME</h2>
+    <p class="section-sub">WHERE TO GET SLIMED NEXT</p>
+  </div>
+  <div id="showsList" class="shows-list" aria-live="polite">
+    <div class="shows-loading">Summoning the gig list from the bog...</div>
+  </div>
+  <p class="shows-footnote">Want us to play your dive, backyard, warehouse, or haunted pizzeria? <a href="#contact?booking=1" data-nav data-booking>BOOK SLIMERS →</a></p>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section id="gallery" class="section gallery-section" aria-label="Gallery">
+  <div class="section-header">
+    <h2 class="section-title">GALLERY</h2>
+    <p class="section-sub">POLAROIDS FROM THE PIT</p>
+  </div>
+  <div class="polaroid-scatter" id="polaroidScatter"></div>
+</section>
+
+<!-- ===== RECOGNITION ===== -->
+<section id="recognition" class="section recognition-section" aria-label="Recognition">
+  <div class="section-header">
+    <h2 class="section-title">RECOGNITION</h2>
+    <p class="section-sub">WHAT THE PAPERS ARE SAYING (OR SHOULD BE)</p>
+  </div>
+  <div class="clippings" id="clippings"></div>
+</section>
+
+<!-- ===== GOO NEWS ===== -->
+<section id="goonews" class="section goonews-section" aria-label="Email signup">
+  <div class="goonews-inner">
+    <div class="goonews-text">
+      <h2 class="section-title goonews-title">GOO NEWS</h2>
+      <p class="goonews-blurb">Dispatches from the swamp. Upcoming shows, new songs, merch drops, and the occasional picture of a sandwich we ate. No spam. Unsubscribe any time by walking into the Everglades.</p>
+    </div>
+    <form id="gooNewsForm" class="goonews-form" novalidate>
+      <label for="gooEmail" class="sr-only">Your email address</label>
+      <input id="gooEmail" name="email" type="email" required autocomplete="email" placeholder="you@slimed.com">
+      <input type="text" name="slime_trap" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true">
+      <button type="submit" class="btn btn-primary">GET SLIMED</button>
+      <div class="form-status" id="gooNewsStatus" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact" class="section contact-section" aria-label="Contact">
+  <div class="section-header">
+    <h2 class="section-title">CONTACT</h2>
+    <p class="section-sub">YELL INTO THE VOID, WE'LL YELL BACK</p>
+  </div>
+
+  <div class="contact-layout">
+    <div class="contact-direct">
+      <div class="contact-card">
+        <h3 class="contact-card-title">DIRECT</h3>
+        <a href="mailto:slimersmusic@gmail.com" class="contact-email">slimersmusic@gmail.com</a>
+        <p class="contact-card-note">For bookings, press, fan mail, ghostly tips, and slime-related hazards.</p>
+      </div>
+      <div class="contact-card booking-card">
+        <h3 class="contact-card-title">★ BOOKING ★</h3>
+        <p class="contact-card-note">Promoters, venues, festivals, house shows — use the form and mention your date, venue, and city. We play cheap, loud, and covered in slime.</p>
+      </div>
+    </div>
+
+    <form id="contactForm" class="contact-form" novalidate>
+      <label>
+        <span>NAME</span>
+        <input name="name" type="text" required autocomplete="name">
+      </label>
+      <label>
+        <span>YOUR EMAIL ADDRESS</span>
+        <input name="email" type="email" required autocomplete="email">
+      </label>
+      <label>
+        <span>MESSAGE</span>
+        <textarea name="message" required rows="6" id="contactMessage"></textarea>
+      </label>
+      <input type="text" name="slime_trap" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true">
+      <button type="submit" class="btn btn-primary">SEND TRANSMISSION</button>
+      <div class="form-status" id="contactStatus" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ===== GAME ===== -->
+<section id="game" class="section game-section" aria-label="Mini-game">
+  <div class="section-header">
+    <h2 class="section-title">PROTON PANIC</h2>
+    <p class="section-sub">BUST GHOSTS. GRAB PIZZA. PARTY WITH SLIMER.</p>
+  </div>
+
+  <div class="game-wrap">
+    <div class="game-screen-wrap">
+      <canvas id="gameCanvas" width="640" height="400" aria-label="Proton Panic game canvas" tabindex="0">Your browser does not support the game canvas.</canvas>
+      <div class="game-mobile-controls" id="gameMobileControls" aria-hidden="true">
+        <div class="dpad">
+          <button class="dpad-btn dpad-up" data-key="w" aria-label="Up">▲</button>
+          <button class="dpad-btn dpad-left" data-key="a" aria-label="Left">◀</button>
+          <button class="dpad-btn dpad-right" data-key="d" aria-label="Right">▶</button>
+          <button class="dpad-btn dpad-down" data-key="s" aria-label="Down">▼</button>
+        </div>
+        <button class="fire-btn" data-key=" " aria-label="Fire proton stream">FIRE</button>
+      </div>
+    </div>
+    <aside class="game-side">
+      <div class="game-legend">
+        <h3>HOW TO BUST</h3>
+        <ul>
+          <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> — MOVE</li>
+          <li><kbd>SPACE</kbd> — PROTON STREAM</li>
+          <li><kbd>M</kbd> — MUTE</li>
+          <li><kbd>P</kbd> — PAUSE</li>
+        </ul>
+        <h3>PICK UPS</h3>
+        <ul class="pickups">
+          <li><span class="pu pu-pizza">🍕</span> PIZZA — +2 HP</li>
+          <li><span class="pu pu-beer">🍺</span> BEER — 3s INVINCIBLE</li>
+          <li><span class="pu pu-snack">🍿</span> SNACKS — RAPID FIRE</li>
+        </ul>
+        <h3>ENEMIES</h3>
+        <ul>
+          <li>👻 GHOSTS — slow</li>
+          <li>🟢 BOOGERS — leave slime</li>
+          <li>💀 GHOULS — fast</li>
+          <li>🎸 SKELETON MOSH PIT</li>
+          <li>🟩 SLIMER — <em>THE BOSS</em></li>
+        </ul>
+      </div>
+      <div class="game-highscore">
+        <div class="hs-label">HIGH SCORE</div>
+        <div class="hs-value" id="hsValue">0</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="footer-drip" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+      <g filter="url(#goo-strong)">
+        <rect x="0" y="40" width="1440" height="40" fill="var(--slime)"/>
+        <ellipse cx="120" cy="30" rx="14" ry="24" fill="var(--slime)"/>
+        <ellipse cx="280" cy="20" rx="10" ry="18" fill="var(--slime)"/>
+        <ellipse cx="460" cy="28" rx="12" ry="22" fill="var(--slime)"/>
+        <ellipse cx="640" cy="16" rx="10" ry="16" fill="var(--slime)"/>
+        <ellipse cx="820" cy="26" rx="13" ry="22" fill="var(--slime)"/>
+        <ellipse cx="1000" cy="18" rx="10" ry="18" fill="var(--slime)"/>
+        <ellipse cx="1180" cy="30" rx="14" ry="24" fill="var(--slime)"/>
+        <ellipse cx="1340" cy="22" rx="11" ry="20" fill="var(--slime)"/>
+      </g>
+    </svg>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-logo">SLIMERS</div>
+    <div class="footer-socials">
+      <a href="https://instagram.com/slimerband" target="_blank" rel="noopener" aria-label="Instagram">INSTAGRAM</a>
+      <span>·</span>
+      <a href="https://youtube.com/@slimersmusic" target="_blank" rel="noopener" aria-label="YouTube">YOUTUBE</a>
+      <span>·</span>
+      <a href="https://slimersmusic.bandcamp.com/album/slimers" target="_blank" rel="noopener" aria-label="Bandcamp">BANDCAMP</a>
+      <span>·</span>
+      <a href="mailto:slimersmusic@gmail.com">EMAIL</a>
+    </div>
+    <div class="footer-copy">© <span id="footerYear">2026</span> SLIMERS. ALL SLIME RESERVED.</div>
+    <div class="footer-disclaimer">
+      SLIMERS is an independent punk band and is not affiliated with or endorsed by Sony Pictures, Columbia Pictures, or the Ghostbusters franchise. All trademarks are the property of their respective owners.
+    </div>
+  </div>
+</footer>
+
+<!-- ===== LIGHTBOX ===== -->
+<div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close photo">✕</button>
+  <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous photo">◀</button>
+  <button class="lightbox-next" id="lightboxNext" aria-label="Next photo">▶</button>
+  <div class="lightbox-stage">
+    <div class="lightbox-img" id="lightboxImg"></div>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+
+<audio id="audioEl" preload="none"></audio>
+
+<script src="app.js" defer></script>
+<script src="game.js" defer></script>
+</body>
+</html>
