@@ -46,10 +46,10 @@
   // GALLERY DATA (placeholder — band replaces with real photos)
   // =====================================================
   const GALLERY_ITEMS = [
-    { caption: 'J-Slime · drums', src: 'slime1.jpg', sticker: 'LIVE!' },
-    { caption: 'T-Slime · bass',  src: 'slime2.jpg', sticker: '' },
-    { caption: 'Backyard show',   src: 'slime3.jpg', sticker: 'SLIMED' },
-    { caption: 'Pit full of slime', src: 'slime4.jpg', sticker: '' },
+    { caption: 'J-Slime · drums', src: 'img/slime1.jpg', sticker: 'LIVE!' },
+    { caption: 'T-Slime · bass',  src: 'img/slime2.jpg', sticker: '' },
+    { caption: 'Backyard show',   src: 'img/slime3.jpg', sticker: 'SLIMED' },
+    { caption: 'Pit full of slime', src: 'img/slime4.jpg', sticker: '' },
     { caption: 'Merch table',     src: '', sticker: 'MERCH' },
     { caption: 'Sound check',     src: '', sticker: '' },
     { caption: 'Recording day',   src: '', sticker: 'STUDIO' },
