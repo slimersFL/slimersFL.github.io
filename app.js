@@ -49,12 +49,12 @@
     { caption: 'J-Slime · drums', src: 'img/slime1.jpg', sticker: 'LIVE!' },
     { caption: 'T-Slime · bass',  src: 'img/slime2.jpg', sticker: '' },
     { caption: 'Backyard show',   src: 'img/slime3.jpg', sticker: 'SLIMED' },
-    { caption: 'Pit full of slime', src: 'img/slime4.jpg', sticker: '' },
-    { caption: 'Merch table',     src: '', sticker: 'MERCH' },
-    { caption: 'Sound check',     src: '', sticker: '' },
-    { caption: 'Recording day',   src: '', sticker: 'STUDIO' },
-    { caption: 'Post-show pizza', src: '', sticker: '' },
-    { caption: 'Tour van',        src: '', sticker: 'ROAD' },
+    { caption: 'Pit full of slime', src: 'img/slime5.jpg', sticker: '' },
+    { caption: 'Merch table',     src: 'img/slime4.jpg', sticker: 'MERCH' },
+    { caption: 'Sound check',     src: 'img/slime6.jpg', sticker: '' },
+    { caption: 'Recording day',   src: 'img/slime7.jpg', sticker: 'STUDIO' },
+    { caption: 'Post-show pizza', src: 'img/slime8.jpg', sticker: '' },
+    { caption: 'Tour van',        src: 'img/slime9.jpg', sticker: 'ROAD' },
   ];
 
   // =====================================================
