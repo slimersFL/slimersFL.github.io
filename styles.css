@@ -1680,7 +1680,7 @@ kbd {
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(180deg, transparent 0%, transparent 70%, #0a0d0a 100%),
+    linear-gradient(180deg, transparent 0%, transparent 90%, #0a0d0a 100%),
     linear-gradient(180deg, rgba(7,9,10,0.55) 0%, rgba(7,9,10,0.75) 100%),
     radial-gradient(ellipse at center, transparent 30%, rgba(7,9,10,0.6) 100%);
   pointer-events: none;
