@@ -48,10 +48,10 @@
   const GALLERY_ITEMS = [
     { caption: 'Oscura Bradenton: Photo-> @gabehernandezmusic', src: 'img/slime1.jpg', sticker: 'ROAD' },
     { caption: 'T-Slime Album Release Show: Photo-> @man_the_danalog',  src: 'img/slime2.jpg', sticker: '' },
-    { caption: 'Slimer @hem_moto: Photo-> @man_the_danalog',   src: 'img/slime3.jpg', sticker: 'SLIMED' },
-    { caption: 'Pit full of slime', src: 'img/slime5.jpg', sticker: '' },
+    { caption: 'Slimer @hex_moto: Photo-> @man_the_danalog',   src: 'img/slime3.jpg', sticker: 'SLIMED' },
+    { caption: 'Rocky the grilled cheese cowboy @churchills_pub', src: 'img/slime5.jpg', sticker: '' },
     { caption: 'T-Slime: : Photo-> @man_the_danalog',     src: 'img/slime4.jpg', sticker: 'MERCH' },
-    { caption: 'J-SLime @churchillspub: Photo-> @hi__d',     src: 'img/slime6.jpg', sticker: '' },
+    { caption: 'J-SLime @churchills_pub: Photo-> @hi__d',     src: 'img/slime6.jpg', sticker: '' },
     { caption: 'Churchill Limbo: Photo-> @hi__d',   src: 'img/slime7.jpg', sticker: '' },
     { caption: 'Roll Call: Photo-> @hi__d', src: 'img/slime8.jpg', sticker: '' },
     { caption: 'Photo-> @gabehernandezmusic',        src: 'img/slime9.jpg', sticker: 'ROAD' },
