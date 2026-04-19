@@ -1652,3 +1652,50 @@ kbd {
 
 /* Make sure drawer toggle clears the global slime drip visually */
 .drawer-toggle { margin-top: 0; }
+
+/* ==================================================
+   LANDING IMAGE BACKGROUND (hero override)
+   ================================================== */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 100px 24px 60px;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(7,9,10,0.55) 0%, rgba(7,9,10,0.75) 100%),
+    radial-gradient(ellipse at center, transparent 30%, rgba(7,9,10,0.6) 100%);
+  pointer-events: none;
+}
+
+.hero-centered {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+/* Kill default margins so the flex gap handles spacing cleanly */
+.hero-centered > * { margin: 0; }
