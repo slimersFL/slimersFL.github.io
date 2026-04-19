@@ -1703,5 +1703,7 @@ kbd {
 #recognition,
 .drawer-link[href="#recognition"] { display: none; }
 
+.drawer-toggles { display: none; }
+
 /* Kill default margins so the flex gap handles spacing cleanly */
 .hero-centered > * { margin: 0; }
