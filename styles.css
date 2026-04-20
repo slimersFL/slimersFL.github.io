@@ -1707,5 +1707,39 @@ kbd {
 
 .footer-disclaimer { display: none; }
 
+/* ----- Watch section with embedded video ----- */
+.video-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--ink);
+  border: 4px solid var(--slime);
+  box-shadow:
+    6px 6px 0 var(--ink),
+    6px 6px 0 3px var(--red),
+    0 0 24px rgba(123, 255, 58, 0.2);
+  transform: rotate(-0.8deg);
+  transition: transform 200ms ease;
+  overflow: hidden;
+}
+
+.video-embed:hover {
+  transform: rotate(0) translateY(-4px);
+}
+
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.video-embed-featured {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 /* Kill default margins so the flex gap handles spacing cleanly */
 .hero-centered > * { margin: 0; }
