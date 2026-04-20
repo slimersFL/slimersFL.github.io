@@ -1757,3 +1757,7 @@ kbd {
 
 /* Kill default margins so the flex gap handles spacing cleanly */
 .hero-centered > * { margin: 0; }
+
+#audioEl {
+  display: none;
+}
