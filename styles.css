@@ -1309,7 +1309,7 @@ body.reduce-motion .footer-drip svg {
   letter-spacing: 0.15em;
   border: 2px solid var(--yellow);
 }
-.goonews-title { font-size: clamp(32px, 5vw, 52px); }
+.goonews-title { font-size: clamp(24px, 3.5vw, 38px); }
 .goonews-title::after { width: 50%; }
 .goonews-blurb {
   font-family: var(--font-typewriter);
