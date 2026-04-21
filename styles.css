@@ -521,7 +521,7 @@ body.reduce-motion .footer-drip svg {
 }
 .title-row {
   display: inline-flex;
-  gap: -0.04em;
+  gap: -0.07em;
 }
 .letter {
   display: inline-block;
