@@ -290,15 +290,29 @@
 </section>
 
 <!-- ===== GAME ===== -->
-<section id="game" class="section game-section" aria-label="Mini-game">
+<section id="game" class="section game-section" aria-label="Mini-game arcade">
   <div class="section-header">
-    <h2 class="section-title">PROTON PANIC</h2>
-    <p class="section-sub">BUST GHOSTS. GRAB PIZZA. PARTY WITH SLIMER.</p>
+    <h2 class="section-title">THE ARCADE</h2>
+    <p class="section-sub">BUST GHOSTS. DODGE SLIME. SURVIVE THE HAUNTING.</p>
+  </div>
+
+  <!-- Game Picker -->
+  <div class="game-picker" id="gamePicker">
+    <button class="game-option active" id="pickGameA" data-game="proton" aria-pressed="true">
+      <span class="game-option-label">GAME A</span>
+      <span class="game-option-title">PROTON PANIC</span>
+      <span class="game-option-desc">Top-down arena · bust ghosts · fight Slimer</span>
+    </button>
+    <button class="game-option" id="pickGameB" data-game="haunted" aria-pressed="false">
+      <span class="game-option-label">GAME B</span>
+      <span class="game-option-title">HAUNTED HOUSE</span>
+      <span class="game-option-desc">First-person · room by room · ghost hunter</span>
+    </button>
   </div>
 
   <div class="game-wrap">
     <div class="game-screen-wrap">
-      <canvas id="gameCanvas" width="640" height="400" aria-label="Proton Panic game canvas" tabindex="0">Your browser does not support the game canvas.</canvas>
+      <canvas id="gameCanvas" width="640" height="400" aria-label="SLIMERS game canvas" tabindex="0">Your browser does not support the game canvas.</canvas>
       <div class="game-mobile-controls" id="gameMobileControls" aria-hidden="true">
         <div class="dpad">
           <button class="dpad-btn dpad-up" data-key="w" aria-label="Up">▲</button>
@@ -310,28 +324,8 @@
       </div>
     </div>
     <aside class="game-side">
-      <div class="game-legend">
-        <h3>HOW TO BUST</h3>
-        <ul>
-          <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> — MOVE</li>
-          <li><kbd>SPACE</kbd> — PROTON STREAM</li>
-          <li><kbd>M</kbd> — MUTE</li>
-          <li><kbd>P</kbd> — PAUSE</li>
-        </ul>
-        <h3>PICK UPS</h3>
-        <ul class="pickups">
-          <li><span class="pu pu-pizza">🍕</span> PIZZA — +2 HP</li>
-          <li><span class="pu pu-beer">🍺</span> BEER — 3s INVINCIBLE</li>
-          <li><span class="pu pu-snack">🍿</span> SNACKS — RAPID FIRE</li>
-        </ul>
-        <h3>ENEMIES</h3>
-        <ul>
-          <li>👻 GHOSTS — slow</li>
-          <li>🟢 BOOGERS — leave slime</li>
-          <li>💀 GHOULS — fast</li>
-          <li>🎸 SKELETON MOSH PIT</li>
-          <li>🟩 SLIMER — <em>THE BOSS</em></li>
-        </ul>
+      <div class="game-legend" id="gameLegend">
+        <!-- populated by game.js -->
       </div>
       <div class="game-highscore">
         <div class="hs-label">HIGH SCORE</div>

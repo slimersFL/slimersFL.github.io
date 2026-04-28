@@ -1444,6 +1444,80 @@ body.reduce-motion .footer-drip svg {
 /* ==================================================
    GAME
    ================================================== */
+/* ---- Game Picker ---- */
+.game-picker {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin: 0 auto 28px;
+  max-width: 680px;
+  flex-wrap: wrap;
+}
+.game-option {
+  flex: 1;
+  min-width: 240px;
+  max-width: 320px;
+  background: var(--bg-panel);
+  border: 3px solid var(--slime-muted);
+  padding: 18px 20px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+.game-option:hover,
+.game-option:focus-visible {
+  border-color: var(--slime);
+  outline: none;
+  transform: translateY(-2px);
+}
+.game-option.active {
+  border-color: var(--slime);
+  background: rgba(123,255,58,0.07);
+  box-shadow: 0 0 20px rgba(123,255,58,0.2);
+}
+.game-option.active::after {
+  content: '▶ SELECTED';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--slime);
+  letter-spacing: 0.1em;
+}
+.game-option-label {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--slime);
+  letter-spacing: 0.2em;
+}
+.game-option-title {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--white);
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+}
+.game-option.active .game-option-title {
+  color: var(--yellow);
+}
+.game-option-desc {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: #888;
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+@media (max-width: 560px) {
+  .game-picker { flex-direction: column; align-items: center; }
+  .game-option { min-width: 0; width: 100%; max-width: 100%; }
+}
+
 .game-section {
   background:
     radial-gradient(ellipse at center, rgba(123,255,58,0.06), transparent 60%);
