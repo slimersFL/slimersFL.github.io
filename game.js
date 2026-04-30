@@ -236,11 +236,11 @@
     ensureAudio();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     if (currentGame === 'proton') startProtonPanic();
-    else startEctoRacer();
+    else erStart();
   }
   function nextLevel() {
     if (currentGame === 'proton') nextLevelProton();
-    else nextStageEcto();
+    else erNextStage();
   }
   function resetToTitle() {
     S.scene = 'title'; S.paused = false;
@@ -417,728 +417,785 @@
     if(S.level<3&&enemies.filter(e=>!e._spit).length===0){SFX.levelClear();S.scene='level_clear';stopMusic();}
   }
 
+
   // ================================================================
-  //  GAME B — ECTO RACER
-  //  Top-down kart racer with perspective road rendering.
-  //  3 stages, each with 3 laps.  Enemy cars, slime hazards, power-ups.
+  //  GAME B — ECTO RACER  (simple 2D top-down highway racer)
+  //
+  //  Ecto-1 drives down a scrolling highway.
+  //  A/D or LEFT/RIGHT to steer between 5 lanes.
+  //  SPACE to fire proton pack forward.
+  //  Dodge/shoot zombie cars, ghost cars, ghoul cars.
+  //  Slimer flies in from the top, drops slime blobs.
+  //  Collect power-ups.  Survive as long as possible.
   // ================================================================
 
-  const TOTAL_STAGES = 3;
-  const LAPS_PER_STAGE = 3;
-  const ROAD_HALF = 200;   // half road width in world units
-  const SHOULDER  = 55;
+  // Road layout constants
+  const NUM_LANES  = 5;
+  const LANE_W     = 80;           // px per lane
+  const ROAD_LEFT  = (W - NUM_LANES * LANE_W) / 2;  // 80
+  const ROAD_RIGHT = ROAD_LEFT + NUM_LANES * LANE_W; // 560
+  function laneX(lane) { return ROAD_LEFT + lane * LANE_W + LANE_W / 2; }
 
-  // ---- TRACK GEOMETRY ----
-  // A closed loop of Catmull-Rom waypoints in world space.
-  function buildTrack(seed) {
-    const pts = [];
-    const n = 18;
-    for (let i = 0; i < n; i++) {
-      const base = (i / n) * Math.PI * 2;
-      const jx = Math.sin(seed * 1.7 + i * 2.9) * 320;
-      const jy = Math.cos(seed * 1.1 + i * 3.3) * 220;
-      pts.push({ x: Math.cos(base)*1800 + jx, y: Math.sin(base)*1200 + jy });
-    }
-    return pts;
-  }
+  // Ecto Racer state
+  let ER = {};
 
-  function catmull(pts, t) {
-    const n = pts.length;
-    const raw = t * n;
-    const i  = Math.floor(raw) % n;
-    const f  = raw - Math.floor(raw);
-    const p0 = pts[(i-1+n)%n], p1 = pts[i], p2 = pts[(i+1)%n], p3 = pts[(i+2)%n];
-    const t2 = f*f, t3 = t2*f;
-    return {
-      x: 0.5*((2*p1.x)+(-p0.x+p2.x)*f+(2*p0.x-5*p1.x+4*p2.x-p3.x)*t2+(-p0.x+3*p1.x-3*p2.x+p3.x)*t3),
-      y: 0.5*((2*p1.y)+(-p0.y+p2.y)*f+(2*p0.y-5*p1.y+4*p2.y-p3.y)*t2+(-p0.y+3*p1.y-3*p2.y+p3.y)*t3),
-    };
-  }
-
-  function trackTangent(pts, t) {
-    const d = 0.001;
-    const a = catmull(pts, (t-d+1)%1), b = catmull(pts, (t+d)%1);
-    const len = Math.sqrt((b.x-a.x)**2+(b.y-a.y)**2)||1;
-    return { x:(b.x-a.x)/len, y:(b.y-a.y)/len };
-  }
-
-  function closestT(pts, wx, wy) {
-    let bestT=0, bestD=Infinity;
-    const steps=160;
-    for(let i=0;i<steps;i++){
-      const t=i/steps, p=catmull(pts,t);
-      const d=(p.x-wx)**2+(p.y-wy)**2;
-      if(d<bestD){bestD=d;bestT=t;}
-    }
-    for(let r=0;r<4;r++){
-      const dt=0.5/steps/(r+1);
-      for(const delta of[-dt,dt]){
-        const t2=(bestT+delta+1)%1, p2=catmull(pts,t2);
-        const d2=(p2.x-wx)**2+(p2.y-wy)**2;
-        if(d2<bestD){bestD=d2;bestT=t2;}
-      }
-    }
-    return bestT;
-  }
-
-  // ---- RACE STATE ----
-  let R = {};
-
-  function makeCar(type, trackT, lateralOff) {
-    const spd = type==='ghoul'?rand(230,310):type==='ghost'?rand(170,230):type==='zombie'?rand(90,150):rand(60,100);
-    return {
-      type, t: trackT, lat: lateralOff,
-      wx:0, wy:0,  // world pos, computed each frame
-      speed: spd,
-      hp: type==='zombie'?4:type==='slimer'?10:2,
-      maxHp: type==='zombie'?4:type==='slimer'?10:2,
-      anim: rand(0,Math.PI*2),
-      shootCooldown: rand(2,4),
-      slimeCooldown: type==='slimer'?rand(1,2):999,
-      alive: true,
-      stunUntil: 0,
-      phase: 1,
-    };
-  }
-
-  function buildEnemies(stage) {
-    const cars=[];
-    const counts=[0,7,10,13];
-    const n=counts[stage]||7;
-    const typeTable={
-      1:['zombie','zombie','ghost','ghost','ghost','ghoul','zombie'],
-      2:['zombie','ghost','ghoul','ghoul','slimer','ghoul','ghost','zombie','ghoul','ghost'],
-      3:['ghoul','ghoul','zombie','slimer','ghoul','ghost','ghoul','slimer','ghoul','zombie','ghoul','slimer','ghost'],
-    };
-    const tbl=typeTable[stage]||typeTable[1];
-    for(let i=0;i<n;i++){
-      const t=(0.08+i/n*0.88)%1;
-      const lat=(Math.random()-0.5)*ROAD_HALF*1.5;
-      cars.push(makeCar(tbl[i%tbl.length],t,lat));
-    }
-    return cars;
-  }
-
-  function buildPickups(pts) {
-    const pus=[];
-    const types=['wrench','nitro','shield','wrench','nitro','nitro'];
-    for(let i=0;i<6;i++){
-      const t=(i/6+0.04)%1;
-      const p=catmull(pts,t), tang=trackTangent(pts,t);
-      const perp={x:-tang.y,y:tang.x};
-      const off=rand(-90,90);
-      pus.push({x:p.x+perp.x*off,y:p.y+perp.y*off,type:types[i],anim:0,collected:false});
-    }
-    return pus;
-  }
-
-  function startEctoRacer(){
-    S.level=1; S.score=0;
-    initStage(1);
-    S.scene='play'; S.paused=false;
-    startMusic('race'); canvas.focus();
-    flash('STAGE 1 — SPOOK ROAD',2.0);
-  }
-
-  function initStage(stage){
-    const pts=buildTrack(stage*4.1);
-    const sp=catmull(pts,0), st=trackTangent(pts,0);
-    R={
-      pts, stage,
-      car:{
-        x:sp.x, y:sp.y,
-        angle:Math.atan2(st.y,st.x),
-        speed:0,
-        hp:6, maxHp:6,
-        invincibleUntil:0, flashUntil:0,
-        nitroUntil:0, shieldUntil:0,
-        shootCooldown:0, slimedUntil:0,
-        trackT:0, lastT:0, lapsCompleted:0,
+  function erInit() {
+    ER = {
+      // Player car
+      car: {
+        lane: 2,             // 0-4
+        x: laneX(2),
+        y: H - 80,
+        w: 34, h: 56,
+        hp: 6, maxHp: 6,
+        invincUntil: 0,
+        flashUntil: 0,
+        nitroUntil: 0,
+        shieldUntil: 0,
+        slimedUntil: 0,
+        moveCooldown: 0,     // lane-change debounce
+        shootCooldown: 0,
       },
-      enemies: buildEnemies(stage),
-      pickups: buildPickups(pts),
-      slimeBlobs:[],
-      bullets:[],
-      parts:[],
-      engineTimer:0,
-      countdown:3.6,
+      // Scrolling road
+      roadOffset: 0,
+      // Enemies, pickups, hazards
+      enemies:    [],
+      bullets:    [],
+      pickups:    [],
+      slimeBlobs: [],        // on-road puddles
+      slimeDrips: [],        // Slimer spit projectiles
+      particles:  [],
+      // Slimer boss
+      slimer: null,
+      // Spawning
+      spawnTimer:   0,
+      spawnRate:    1.8,
+      pickupTimer:  0,
+      pickupRate:   6,
+      slimerTimer:  12,
+      // Scoring / progression
+      distance:  0,          // px scrolled = score base
+      stage:     1,
+      stageDist: 0,          // distance within current stage
+      stageLen:  3000,       // px before next stage
+      speed:     220,        // base scroll speed px/s
+      gameTime:  0,
     };
-    S.flashText=null;
   }
 
-  function nextStageEcto(){
-    const next=R.stage+1;
-    if(next>TOTAL_STAGES){win();return;}
-    initStage(next);
-    S.scene='play';
-    startMusic(next===TOTAL_STAGES?'rboss':'race2');
-    const names={1:'STAGE 1 — SPOOK ROAD',2:'STAGE 2 — GRAVEYARD RUN',3:'STAGE 3 — SLIMER SHOWDOWN'};
-    flash(names[next]||`STAGE ${next}`,2.0);
+  function erStart() {
+    S.level = 1; S.score = 0;
+    erInit();
+    S.scene = 'play'; S.paused = false;
+    startMusic('race');
+    canvas.focus();
+    flash('STAGE 1 — SPOOK ROAD', 2.0);
+  }
+
+  // Called when stage clear screen dismissed
+  function erNextStage() {
+    ER.stage++;
+    if (ER.stage > 3) { win(); return; }
+    // Keep car hp, reset spawn timers, increase speed
+    ER.stageDist  = 0;
+    ER.speed     += 60;
+    ER.spawnRate  = Math.max(0.7, ER.spawnRate - 0.25);
+    ER.enemies    = [];
+    ER.slimeDrips = [];
+    ER.slimeBlobs = [];
+    ER.slimer     = null;
+    ER.slimerTimer = 10;
+    S.scene = 'play';
+    startMusic(ER.stage === 3 ? 'rboss' : 'race2');
+    const names = ['','STAGE 1 — SPOOK ROAD','STAGE 2 — GRAVEYARD RUN','STAGE 3 — SLIMER SHOWDOWN'];
+    flash(names[ER.stage] || `STAGE ${ER.stage}`, 2.0);
   }
 
   // ---- UPDATE ----
-  function updateEcto(dt){
-    S.time+=dt; S.frame++;
-    if(S.paused||S.scene!=='play') return;
-    const car=R.car;
+  function updateEcto(dt) {
+    S.time += dt; S.frame++;
+    if (S.paused || S.scene !== 'play') return;
 
-    // Countdown
-    if(R.countdown>0){ R.countdown-=dt; return; }
+    const car = ER.car;
+    ER.gameTime += dt;
 
-    // Engine sfx
-    R.engineTimer-=dt;
-    if(R.engineTimer<=0&&car.speed>20){ R.engineTimer=0.09; SFX.engine(); }
+    // --- SCROLL ---
+    const spd = S.time < car.nitroUntil ? ER.speed * 1.7
+              : S.time < car.slimedUntil ? ER.speed * 0.45
+              : ER.speed;
+    ER.roadOffset  = (ER.roadOffset + spd * dt) % 80;
+    ER.distance   += spd * dt;
+    ER.stageDist  += spd * dt;
 
-    // ---- DRIVE ----
-    const maxSpd = S.time<car.nitroUntil ? 500 : 310;
-    const accel=260, brakeF=400, drag=1.6, turnRate=2.3;
-
-    if(keys['w'])      car.speed=Math.min(maxSpd, car.speed+accel*dt);
-    else if(keys['s']) car.speed=Math.max(-80,    car.speed-brakeF*dt);
-    else               car.speed*=Math.max(0,     1-drag*dt);
-
-    const slimed=S.time<car.slimedUntil;
-    const tm=slimed?0.35:1;
-    if(keys['a']) car.angle-=turnRate*tm*dt*(car.speed>=0?1:-1);
-    if(keys['d']) car.angle+=turnRate*tm*dt*(car.speed>=0?1:-1);
-
-    car.x+=Math.cos(car.angle)*car.speed*dt;
-    car.y+=Math.sin(car.angle)*car.speed*dt;
-
-    // Soft track boundary
-    const nt=closestT(R.pts,car.x,car.y);
-    const np=catmull(R.pts,nt);
-    const dTrack=Math.sqrt((car.x-np.x)**2+(car.y-np.y)**2);
-    if(dTrack>ROAD_HALF+SHOULDER){
-      const over=dTrack-(ROAD_HALF+SHOULDER);
-      const pushX=(np.x-car.x)/(dTrack||1), pushY=(np.y-car.y)/(dTrack||1);
-      car.x+=pushX*over*0.65; car.y+=pushY*over*0.65;
-      car.speed*=0.65;
+    // Stage progression
+    if (ER.stageDist >= ER.stageLen) {
+      ER.stageDist = 0;
+      S.score += 500;
+      SFX.levelClear();
+      S.scene = 'level_clear';
+      stopMusic();
+      return;
     }
 
-    // Lap detection (crossing t≈0)
-    if(car.lastT>0.88&&nt<0.12){
-      car.lapsCompleted++;
-      S.score+=200;
-      flash(`LAP ${car.lapsCompleted}/${LAPS_PER_STAGE} DONE!`,1.8);
-      SFX.levelClear();
-      if(car.lapsCompleted>=LAPS_PER_STAGE){
-        S.scene='level_clear'; stopMusic(); return;
+    // --- STEER ---
+    car.moveCooldown -= dt;
+    if (car.moveCooldown <= 0) {
+      if ((keys['a'] || keys['arrowleft']) && car.lane > 0) {
+        car.lane--; car.moveCooldown = 0.18;
+      } else if ((keys['d'] || keys['arrowright']) && car.lane < NUM_LANES - 1) {
+        car.lane++; car.moveCooldown = 0.18;
       }
     }
-    car.lastT=nt; car.trackT=nt;
+    // Smooth x toward lane center
+    const targetX = laneX(car.lane);
+    car.x += (targetX - car.x) * Math.min(1, dt * 14);
 
-    // ---- SHOOT ----
-    car.shootCooldown-=dt;
-    if(keys[' ']&&car.shootCooldown<=0){
-      car.shootCooldown=0.28;
-      R.bullets.push({x:car.x+Math.cos(car.angle)*32,y:car.y+Math.sin(car.angle)*32,vx:Math.cos(car.angle)*580,vy:Math.sin(car.angle)*580,life:1.1});
+    // --- SHOOT ---
+    car.shootCooldown -= dt;
+    if (keys[' '] && car.shootCooldown <= 0) {
+      car.shootCooldown = 0.25;
+      ER.bullets.push({ x: car.x, y: car.y - car.h / 2 - 6, w: 6, h: 16, vy: -520 });
       SFX.shoot();
     }
 
-    // ---- BULLETS ----
-    for(let i=R.bullets.length-1;i>=0;i--){
-      const b=R.bullets[i]; b.x+=b.vx*dt; b.y+=b.vy*dt; b.life-=dt;
-      if(b.life<=0){R.bullets.splice(i,1);continue;}
-      let hit=false;
-      for(const e of R.enemies){
-        if(!e.alive) continue;
-        if(Math.sqrt((b.x-e.wx)**2+(b.y-e.wy)**2)<30){
+    // --- BULLETS ---
+    for (let i = ER.bullets.length - 1; i >= 0; i--) {
+      const b = ER.bullets[i];
+      b.y += b.vy * dt;
+      if (b.y < -20) { ER.bullets.splice(i, 1); continue; }
+      // Hit enemies
+      let hit = false;
+      for (let j = ER.enemies.length - 1; j >= 0; j--) {
+        const e = ER.enemies[j];
+        if (rectsOverlap(b.x - 3, b.y - 8, 6, 16, e.x - e.w/2, e.y - e.h/2, e.w, e.h)) {
           e.hp--;
-          for(let p=0;p<7;p++) R.parts.push({x:b.x,y:b.y,vx:rand(-90,90),vy:rand(-90,90),life:0.45,color:e.type==='slimer'?'#7bff3a':'#fff'});
+          spawnParticles(b.x, b.y, 5, e.type === 'slimer_car' ? '#7bff3a' : '#fff');
           SFX.hit();
-          if(e.hp<=0){
-            e.alive=false;
-            const pts2={zombie:50,ghost:40,ghoul:70,slimer:200};
-            S.score+=pts2[e.type]||30;
-            for(let p=0;p<16;p++) R.parts.push({x:e.wx,y:e.wy,vx:rand(-140,140),vy:rand(-140,140),life:0.65,color:e.type==='slimer'?'#7bff3a':'#d1121b'});
-            if(e.type==='slimer'&&e.phase===1&&R.stage===TOTAL_STAGES){
-              // Last slimer on final stage = super enrage
-              flash('SLIMER DESTROYED!',2.0);
-            }
+          if (e.hp <= 0) {
+            const pts = { zombie: 50, ghost: 40, ghoul: 70, slimer_car: 200 };
+            S.score += pts[e.type] || 30;
+            spawnParticles(e.x, e.y, 14, e.type === 'slimer_car' ? '#7bff3a' : '#d1121b');
+            ER.enemies.splice(j, 1);
           }
-          hit=true; break;
+          hit = true; break;
         }
       }
-      if(hit){R.bullets.splice(i,1);continue;}
+      // Hit Slimer boss
+      if (!hit && ER.slimer && ER.slimer.alive) {
+        const sl = ER.slimer;
+        if (rectsOverlap(b.x-3, b.y-8, 6, 16, sl.x-sl.r, sl.y-sl.r, sl.r*2, sl.r*2)) {
+          sl.hp--;
+          spawnParticles(b.x, b.y, 6, '#7bff3a');
+          SFX.hit();
+          if (sl.hp <= 0) {
+            sl.alive = false;
+            S.score += 400;
+            spawnParticles(sl.x, sl.y, 30, '#7bff3a');
+            flash('SLIMER BUSTED!', 2.0);
+            SFX.boss();
+          } else if (sl.hp < sl.maxHp / 2 && sl.phase === 1) {
+            sl.phase = 2; sl.speed *= 1.5; sl.spitRate *= 0.55;
+            flash('SLIMER ENRAGED!', 1.5); SFX.boss();
+          }
+          hit = true;
+        }
+      }
+      if (hit) ER.bullets.splice(i, 1);
     }
 
-    // ---- ENEMIES ----
-    for(const e of R.enemies){
-      if(!e.alive) continue;
-      e.anim+=dt*3;
-      if(S.time<e.stunUntil) continue;
+    // --- SPAWN ENEMIES ---
+    ER.spawnTimer -= dt;
+    if (ER.spawnTimer <= 0) {
+      ER.spawnTimer = ER.spawnRate * (0.7 + Math.random() * 0.6);
+      spawnEnemy();
+    }
 
-      // Advance along track
-      e.t=(e.t+e.speed/70000*dt*R.pts.length)%1;
+    // --- SPAWN PICKUPS ---
+    ER.pickupTimer -= dt;
+    if (ER.pickupTimer <= 0) {
+      ER.pickupTimer = ER.pickupRate * (0.8 + Math.random() * 0.4);
+      const types = ['wrench','nitro','shield'];
+      const lane = Math.floor(Math.random() * NUM_LANES);
+      ER.pickups.push({ x: laneX(lane), y: -30, type: types[Math.floor(Math.random()*types.length)], anim: 0 });
+    }
 
-      // Ghost car: on stage 3, if no enemies left except slimer, slimer becomes enraged
-      if(e.type==='slimer'&&R.stage===TOTAL_STAGES){
-        const others=R.enemies.filter(x=>x.alive&&x.type!=='slimer');
-        if(others.length===0&&e.phase===1){
-          e.phase=2; e.speed*=1.6; e.slimeCooldown*=0.4;
-          SFX.boss(); flash('SLIMER ENRAGED!',1.5);
-        }
-      }
+    // --- SPAWN SLIMER ---
+    ER.slimerTimer -= dt;
+    if (ER.slimerTimer <= 0 && (!ER.slimer || !ER.slimer.alive)) {
+      ER.slimerTimer = 18 + Math.random() * 8;
+      const hp = ER.stage === 3 ? 20 : 12;
+      ER.slimer = {
+        x: ROAD_LEFT + Math.random() * (ROAD_RIGHT - ROAD_LEFT),
+        y: -60,
+        r: 36, hp, maxHp: hp,
+        vx: (Math.random() - 0.5) * 140,
+        vy: 80,
+        alive: true, phase: 1,
+        spitTimer: 0, spitRate: 1.8,
+        bounceTimer: 0, targetY: 80 + Math.random() * 100,
+        anim: 0,
+        speed: 90,
+      };
+    }
 
-      // Lateral drift
-      const tp=catmull(R.pts,e.t), tang=trackTangent(R.pts,e.t);
-      const perp={x:-tang.y,y:tang.x};
+    // --- UPDATE ENEMIES ---
+    for (let i = ER.enemies.length - 1; i >= 0; i--) {
+      const e = ER.enemies[i];
+      e.y += (spd + e.relSpeed) * dt;
+      e.anim += dt * 3;
+      if (e.y > H + 60) { ER.enemies.splice(i, 1); continue; }
 
-      if(e.type==='slimer'){
-        e.lat=Math.sin(S.time*1.8+e.anim)*ROAD_HALF*0.75;
-      } else if(e.type==='ghost'||e.type==='ghoul'){
-        // drift toward player laterally
-        const ct=catmull(R.pts,car.trackT);
-        const proj=(ct.x-tp.x)*perp.x+(ct.y-tp.y)*perp.y;
-        e.lat=clamp(e.lat+Math.sign(proj)*50*dt,-ROAD_HALF*0.88,ROAD_HALF*0.88);
-      }
-
-      e.wx=tp.x+perp.x*e.lat;
-      e.wy=tp.y+perp.y*e.lat;
-
-      // Slimer drops slime
-      e.slimeCooldown-=dt;
-      if(e.type==='slimer'&&e.slimeCooldown<=0){
-        e.slimeCooldown=rand(1.2,2.8);
-        R.slimeBlobs.push({x:e.wx,y:e.wy,life:7,r:48,projectile:false});
-        SFX.slimeSplat();
-      }
-
-      // Ghoul/ghost fire slime at player
-      e.shootCooldown-=dt;
-      if((e.type==='ghoul'||e.type==='ghost')&&e.shootCooldown<=0){
-        const ddx=car.x-e.wx,ddy=car.y-e.wy,dd=Math.sqrt(ddx*ddx+ddy*ddy);
-        if(dd<420){
-          e.shootCooldown=rand(2,4);
-          const ang=Math.atan2(ddy,ddx);
-          R.slimeBlobs.push({x:e.wx,y:e.wy,vx:Math.cos(ang)*170,vy:Math.sin(ang)*170,life:2.8,r:16,projectile:true});
-        }
+      // Ghoul weaves
+      if (e.type === 'ghoul') {
+        e.x += e.vx * dt;
+        if (e.x < ROAD_LEFT + e.w/2 || e.x > ROAD_RIGHT - e.w/2) e.vx *= -1;
       }
 
       // Collision with player
-      if(S.time>=car.invincibleUntil&&S.time>=car.shieldUntil){
-        const ddx=car.x-e.wx,ddy=car.y-e.wy;
-        if(Math.sqrt(ddx*ddx+ddy*ddy)<38){
-          car.hp--; car.invincibleUntil=S.time+1.3; car.flashUntil=S.time+0.45;
-          car.speed*=-0.35; SFX.crash(); SFX.hurt();
-          for(let p=0;p<10;p++) R.parts.push({x:car.x,y:car.y,vx:rand(-110,110),vy:rand(-110,110),life:0.5,color:'#ff4444'});
-          if(car.hp<=0){gameOver();return;}
+      if (S.time >= car.invincUntil && S.time >= car.shieldUntil) {
+        if (rectsOverlap(car.x-car.w/2+4, car.y-car.h/2+4, car.w-8, car.h-8,
+                         e.x-e.w/2, e.y-e.h/2, e.w, e.h)) {
+          car.hp--;
+          car.invincUntil = S.time + 1.2;
+          car.flashUntil  = S.time + 0.4;
+          spawnParticles(car.x, car.y, 10, '#ff4444');
+          SFX.crash(); SFX.hurt();
+          ER.enemies.splice(i, 1);
+          if (car.hp <= 0) { gameOver(); return; }
         }
       }
     }
 
-    // ---- SLIME BLOBS ----
-    for(let i=R.slimeBlobs.length-1;i>=0;i--){
-      const b=R.slimeBlobs[i]; b.life-=dt;
-      if(b.projectile){b.x+=b.vx*dt;b.y+=b.vy*dt;}
-      if(b.life<=0){R.slimeBlobs.splice(i,1);continue;}
-      const ddx=car.x-b.x,ddy=car.y-b.y;
-      if(Math.sqrt(ddx*ddx+ddy*ddy)<b.r+20&&S.time>=car.invincibleUntil&&S.time>=car.shieldUntil){
-        car.slimedUntil=S.time+3.2; car.invincibleUntil=S.time+0.5; SFX.slimeSplat();
-        flash('SLIMED! HANDLING REDUCED!',1.2);
-        if(b.projectile) R.slimeBlobs.splice(i,1);
+    // --- UPDATE SLIMER ---
+    if (ER.slimer && ER.slimer.alive) {
+      const sl = ER.slimer;
+      sl.anim += dt * 3;
+
+      // Drift side to side, hover near top third
+      sl.x += sl.vx * dt;
+      if (sl.x < ROAD_LEFT + sl.r)  { sl.x = ROAD_LEFT + sl.r;  sl.vx = Math.abs(sl.vx); }
+      if (sl.x > ROAD_RIGHT - sl.r) { sl.x = ROAD_RIGHT - sl.r; sl.vx = -Math.abs(sl.vx); }
+      if (sl.y < sl.targetY) sl.y += sl.speed * dt;
+      else sl.y += Math.sin(S.time * 2) * 25 * dt;  // hover bob
+
+      // Spit slime blobs
+      sl.spitTimer -= dt;
+      if (sl.spitTimer <= 0) {
+        sl.spitTimer = sl.spitRate;
+        const numDrips = sl.phase === 2 ? 3 : 1;
+        for (let k = 0; k < numDrips; k++) {
+          const ang = Math.PI/2 + (k - (numDrips-1)/2) * 0.35;
+          ER.slimeDrips.push({
+            x: sl.x + (Math.random()-0.5)*sl.r,
+            y: sl.y + sl.r,
+            vx: Math.cos(ang) * 60 + (Math.random()-0.5)*40,
+            vy: Math.sin(ang) * 200 + 80,
+          });
+        }
+        SFX.slimeSplat();
       }
-    }
 
-    // ---- PICKUPS ----
-    for(const pu of R.pickups){
-      if(pu.collected) continue;
-      pu.anim+=dt*3;
-      const ddx=car.x-pu.x,ddy=car.y-pu.y;
-      if(Math.sqrt(ddx*ddx+ddy*ddy)<34){
-        pu.collected=true; SFX.pickup();
-        if(pu.type==='wrench')  {car.hp=Math.min(car.maxHp,car.hp+2);flash('WRENCH! +2 HP',1.2);}
-        if(pu.type==='nitro')   {car.nitroUntil=S.time+4.0;flash('NITRO BOOST!',1.2);SFX.nitro();}
-        if(pu.type==='shield')  {car.shieldUntil=S.time+4.0;flash('SHIELD ACTIVATED!',1.2);}
-        S.score+=30;
-      }
-    }
-
-    // ---- PARTICLES ----
-    for(let i=R.parts.length-1;i>=0;i--){
-      const p=R.parts[i]; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=0.88; p.vy*=0.88; p.life-=dt;
-      if(p.life<=0) R.parts.splice(i,1);
-    }
-  }
-
-  // ---- DRAW ----
-  function drawEcto(){
-    const car=R.car;
-
-    // Camera follows behind car
-    const camBack=150;
-    const camX=car.x-Math.cos(car.angle)*camBack;
-    const camY=car.y-Math.sin(car.angle)*camBack;
-    const camA=car.angle;
-
-    // World → screen projection
-    function w2s(wx,wy){
-      const dx=wx-camX, dy=wy-camY;
-      const rx= dx*Math.cos(-camA)-dy*Math.sin(-camA);
-      const ry= dx*Math.sin(-camA)+dy*Math.cos(-camA);
-      const depth=ry+camBack;
-      if(depth<8) return null;
-      const sc=210/depth;
-      return{sx:W/2+rx*sc, sy:H*0.70-(depth-camBack*0.2)*0.38, scale:sc, depth};
-    }
-
-    // --- SKY ---
-    ctx.fillStyle='#04060f'; ctx.fillRect(0,0,W,H);
-    // Stars
-    for(let i=0;i<55;i++){
-      const sx=((i*139+S.frame*0.25)%W), sy=((i*71)%(H*0.44));
-      ctx.globalAlpha=0.3+((Math.sin(S.time*1.8+i)+1)*0.5)*0.4;
-      ctx.fillStyle='#fff'; ctx.fillRect(sx,sy,1,1);
-    }
-    ctx.globalAlpha=1;
-    // Moon
-    ctx.fillStyle='#fffde0'; ctx.beginPath(); ctx.arc(W-75,46,26,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='rgba(210,220,160,0.28)'; ctx.beginPath(); ctx.arc(W-75,46,34,0,Math.PI*2); ctx.fill();
-    // Horizon fog
-    const fog=ctx.createLinearGradient(0,H*0.37,0,H*0.54);
-    fog.addColorStop(0,'rgba(10,5,20,0)'); fog.addColorStop(1,'rgba(10,5,20,0.88)');
-    ctx.fillStyle=fog; ctx.fillRect(0,H*0.37,W,H*0.17);
-
-    // --- ROAD (far→near) ---
-    const SEGS=72;
-    const baseT=car.trackT;
-    for(let i=SEGS;i>=0;i--){
-      const t =(baseT+i*0.0085)%1;
-      const t2=(baseT+(i+1)*0.0085)%1;
-      const c =catmull(R.pts,t),  tang=trackTangent(R.pts,t),  perp={x:-tang.y,y:tang.x};
-      const c2=catmull(R.pts,t2), tang2=trackTangent(R.pts,t2),perp2={x:-tang2.y,y:tang2.x};
-
-      const RW=ROAD_HALF+SHOULDER;
-      const corners=[
-        w2s(c.x +perp.x*RW, c.y +perp.y*RW),
-        w2s(c.x -perp.x*RW, c.y -perp.y*RW),
-        w2s(c2.x-perp2.x*RW,c2.y-perp2.y*RW),
-        w2s(c2.x+perp2.x*RW,c2.y+perp2.y*RW),
-      ];
-      const rCorners=[
-        w2s(c.x +perp.x*ROAD_HALF, c.y +perp.y*ROAD_HALF),
-        w2s(c.x -perp.x*ROAD_HALF, c.y -perp.y*ROAD_HALF),
-        w2s(c2.x-perp2.x*ROAD_HALF,c2.y-perp2.y*ROAD_HALF),
-        w2s(c2.x+perp2.x*ROAD_HALF,c2.y+perp2.y*ROAD_HALF),
-      ];
-      if(corners.some(x=>!x)) continue;
-      const fogFrac=Math.min(1,i/SEGS);
-
-      // Shoulder
-      ctx.globalAlpha=1-fogFrac*0.62;
-      ctx.beginPath();
-      ctx.moveTo(corners[0].sx,corners[0].sy); ctx.lineTo(corners[1].sx,corners[1].sy);
-      ctx.lineTo(corners[2].sx,corners[2].sy); ctx.lineTo(corners[3].sx,corners[3].sy);
-      ctx.closePath();
-      ctx.fillStyle=i%2===0?'#182208':'#121a06'; ctx.fill();
-
-      // Road
-      if(rCorners.every(x=>x)){
-        const slimeNearby=R.slimeBlobs.some(b=>!b.projectile&&Math.sqrt((b.x-c.x)**2+(b.y-c.y)**2)<ROAD_HALF*1.4);
-        ctx.beginPath();
-        ctx.moveTo(rCorners[0].sx,rCorners[0].sy); ctx.lineTo(rCorners[1].sx,rCorners[1].sy);
-        ctx.lineTo(rCorners[2].sx,rCorners[2].sy); ctx.lineTo(rCorners[3].sx,rCorners[3].sy);
-        ctx.closePath();
-        ctx.fillStyle=slimeNearby?(i%2===0?'#1c3a0a':'#162e06'):(i%2===0?'#2e2e2e':'#262626');
-        ctx.fill();
-
-        // Road edges
-        ctx.strokeStyle=`rgba(255,50,50,${0.5*(1-fogFrac*0.9)})`;
-        ctx.lineWidth=1;
-        ctx.beginPath(); ctx.moveTo(rCorners[0].sx,rCorners[0].sy); ctx.lineTo(rCorners[3].sx,rCorners[3].sy); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(rCorners[1].sx,rCorners[1].sy); ctx.lineTo(rCorners[2].sx,rCorners[2].sy); ctx.stroke();
-
-        // Center dash
-        const mid=w2s(c.x,c.y);
-        if(mid&&i%6<3){
-          ctx.fillStyle=`rgba(255,240,0,${0.7*(1-fogFrac*0.85)})`;
-          ctx.fillRect(mid.sx-1,mid.sy-1,2,3);
+      // Touch damage
+      if (S.time >= car.invincUntil && S.time >= car.shieldUntil) {
+        const dx = car.x - sl.x, dy = car.y - sl.y;
+        if (Math.sqrt(dx*dx+dy*dy) < sl.r + 20) {
+          car.hp -= 2;
+          car.invincUntil = S.time + 1.5;
+          car.flashUntil  = S.time + 0.5;
+          SFX.hurt(); SFX.crash();
+          if (car.hp <= 0) { gameOver(); return; }
         }
       }
-      ctx.globalAlpha=1;
     }
 
-    // --- SLIME PUDDLES ON ROAD ---
-    for(const b of R.slimeBlobs){
-      if(b.projectile) continue;
-      const sp=w2s(b.x,b.y); if(!sp||sp.depth<8) continue;
-      const r=b.r*sp.scale*0.75;
-      ctx.globalAlpha=Math.min(0.72,b.life/4)*(1-Math.min(1,sp.depth/560));
-      ctx.fillStyle='#7bff3a';
-      ctx.beginPath(); ctx.ellipse(sp.sx,sp.sy,r,r*0.38,0,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#c5ff6b';
-      ctx.beginPath(); ctx.ellipse(sp.sx-r*0.22,sp.sy-r*0.1,r*0.3,r*0.12,0,0,Math.PI*2); ctx.fill();
-      ctx.globalAlpha=1;
+    // --- SLIME DRIPS (airborne) ---
+    for (let i = ER.slimeDrips.length - 1; i >= 0; i--) {
+      const d = ER.slimeDrips[i];
+      d.x += d.vx * dt;
+      d.y += d.vy * dt;
+      if (d.y > H + 10) {
+        // Land — become road puddle
+        ER.slimeBlobs.push({ x: d.x, y: d.y, life: 6, r: 28 });
+        ER.slimeDrips.splice(i, 1); continue;
+      }
+      // Hit player
+      if (S.time >= car.invincUntil && S.time >= car.shieldUntil) {
+        const dx = car.x - d.x, dy = car.y - d.y;
+        if (Math.sqrt(dx*dx+dy*dy) < 20) {
+          car.slimedUntil = S.time + 3.5;
+          car.invincUntil = S.time + 0.5;
+          flash('SLIMED! SPEED REDUCED!', 1.2);
+          SFX.slimeSplat();
+          ER.slimeDrips.splice(i, 1);
+        }
+      }
+    }
+
+    // --- SLIME BLOBS ON ROAD (scroll with road) ---
+    for (let i = ER.slimeBlobs.length - 1; i >= 0; i--) {
+      const b = ER.slimeBlobs[i];
+      b.y += spd * dt;   // scroll down with road
+      b.life -= dt;
+      if (b.y > H + 40 || b.life <= 0) { ER.slimeBlobs.splice(i, 1); continue; }
+      // Slow player if overlapping
+      if (S.time >= car.slimedUntil) {
+        const dx = car.x - b.x, dy = car.y - b.y;
+        if (Math.sqrt(dx*dx+dy*dy) < b.r + 18) {
+          car.slimedUntil = S.time + 2.5;
+          flash('SLIMED!', 1.0);
+          SFX.slimeSplat();
+        }
+      }
     }
 
     // --- PICKUPS ---
-    for(const pu of R.pickups){
-      if(pu.collected) continue;
-      const sp=w2s(pu.x,pu.y); if(!sp||sp.depth<8||sp.depth>480) continue;
-      const sz=10*sp.scale, bob=Math.sin(pu.anim+S.time*4)*2*sp.scale;
-      ctx.globalAlpha=Math.max(0.2,1-sp.depth/480);
-      if(pu.type==='wrench'){
-        ctx.fillStyle='#bbbbbb'; ctx.fillRect(sp.sx-sz*0.4,sp.sy-sz+bob,sz*0.8,sz*1.6);
-        ctx.fillStyle='#888'; ctx.fillRect(sp.sx-sz*0.7,sp.sy-sz*0.1+bob,sz*1.4,sz*0.4);
-      } else if(pu.type==='nitro'){
-        ctx.fillStyle='#ffea00'; ctx.beginPath(); ctx.arc(sp.sx,sp.sy+bob,sz*0.85,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#ff8800'; ctx.font=`${Math.floor(sz*1.5)}px monospace`; ctx.textAlign='center';
-        ctx.fillText('⚡',sp.sx,sp.sy+bob+sz*0.45); ctx.textAlign='left';
-      } else {
-        ctx.fillStyle='#4488ff'; ctx.beginPath(); ctx.arc(sp.sx,sp.sy+bob,sz*0.85,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#88aaff'; ctx.beginPath(); ctx.arc(sp.sx-sz*0.3,sp.sy-sz*0.3+bob,sz*0.3,0,Math.PI*2); ctx.fill();
+    for (let i = ER.pickups.length - 1; i >= 0; i--) {
+      const pu = ER.pickups[i];
+      pu.y += spd * dt;
+      pu.anim += dt * 4;
+      if (pu.y > H + 30) { ER.pickups.splice(i, 1); continue; }
+      const dx = car.x - pu.x, dy = car.y - pu.y;
+      if (Math.sqrt(dx*dx+dy*dy) < 30) {
+        SFX.pickup();
+        if (pu.type === 'wrench')  { car.hp = Math.min(car.maxHp, car.hp + 2); flash('WRENCH! +2 HP', 1.2); }
+        if (pu.type === 'nitro')   { car.nitroUntil  = S.time + 4.0; flash('NITRO BOOST!', 1.2); SFX.nitro(); }
+        if (pu.type === 'shield')  { car.shieldUntil = S.time + 4.0; flash('SHIELD ACTIVATED!', 1.2); }
+        S.score += 30;
+        ER.pickups.splice(i, 1);
       }
-      ctx.globalAlpha=1;
-    }
-
-    // --- ENEMY CARS (far→near) ---
-    const visE=R.enemies
-      .filter(e=>e.alive&&e.wx!==undefined)
-      .map(e=>{const sp=w2s(e.wx,e.wy);return{e,sp};})
-      .filter(({sp})=>sp&&sp.depth>8&&sp.depth<660)
-      .sort((a,b)=>b.sp.depth-a.sp.depth);
-
-    for(const{e,sp} of visE){
-      const sc=sp.scale, cw=30*sc, ch=48*sc, cx=sp.sx, cy=sp.sy;
-      ctx.globalAlpha=Math.max(0.15,1-sp.depth/660);
-
-      if(e.type==='ghost'){
-        ctx.globalAlpha*=(0.55+Math.sin(S.time*4+e.anim)*0.25);
-        ctx.fillStyle='#c0b8e0'; ctx.fillRect(cx-cw/2,cy-ch/2,cw,ch);
-        ctx.fillStyle='#9880cc'; ctx.fillRect(cx-cw/2+1,cy-ch/2+1,cw-2,ch*0.34);
-        ctx.fillStyle='rgba(0,0,0,0.65)';
-        ctx.fillRect(cx-cw*0.22,cy-ch*0.32,cw*0.16,cw*0.16);
-        ctx.fillRect(cx+cw*0.06,cy-ch*0.32,cw*0.16,cw*0.16);
-      } else if(e.type==='zombie'){
-        ctx.fillStyle='#5a3020'; ctx.fillRect(cx-cw/2,cy-ch/2,cw,ch);
-        ctx.fillStyle='#3a180a'; ctx.fillRect(cx-cw/2+1,cy-ch/2+1,cw-2,ch*0.34);
-        ctx.fillStyle='#7a4020'; ctx.fillRect(cx-cw/2,cy-ch*0.08,cw,ch*0.14);
-        ctx.fillStyle='#7a9a40'; ctx.fillRect(cx-cw/2-cw*0.32,cy-ch*0.1,cw*0.3,cw*0.22);
-        // rotting marks
-        ctx.fillStyle='#2a0a00'; ctx.fillRect(cx-cw*0.2,cy,cw*0.1,cw*0.1); ctx.fillRect(cx+cw*0.1,cy-ch*0.2,cw*0.08,cw*0.08);
-      } else if(e.type==='ghoul'){
-        ctx.fillStyle='#5a0a8a'; ctx.fillRect(cx-cw/2,cy-ch/2,cw,ch);
-        ctx.fillStyle='#8a20b8'; ctx.fillRect(cx-cw/2+1,cy-ch/2+1,cw-2,ch*0.34);
-        ctx.fillStyle='#ffea00'; ctx.fillRect(cx-cw*0.3,cy-ch*0.36,cw*0.6,cw*0.2);
-        // flame decals
-        ctx.fillStyle='#ff5500';
-        for(let fi=0;fi<3;fi++) ctx.fillRect(cx-cw*0.28+fi*cw*0.26,cy+ch*0.22,cw*0.14,ch*0.28);
-        ctx.fillStyle='#ffaa00';
-        for(let fi=0;fi<3;fi++) ctx.fillRect(cx-cw*0.24+fi*cw*0.26,cy+ch*0.22,cw*0.07,ch*0.18);
-      } else {
-        // Slimer blob car
-        const bl=Math.sin(S.time*3+e.anim)*cw*0.1;
-        const enraged=e.phase===2;
-        ctx.fillStyle=enraged?'#1a6a1a':'#0d4a2e';
-        ctx.beginPath(); ctx.ellipse(cx+2,cy+2,cw/2+bl,ch/2+bl*0.5,0,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle=enraged?'#c5ff6b':'#7bff3a';
-        ctx.beginPath(); ctx.ellipse(cx,cy,cw/2+bl,ch/2+bl*0.5,0,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#dfff9a';
-        ctx.beginPath(); ctx.ellipse(cx-cw*0.22,cy-ch*0.22,cw*0.28,ch*0.13,0,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#fff';
-        ctx.beginPath(); ctx.arc(cx-cw*0.2,cy-ch*0.1,cw*0.15,0,Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(cx+cw*0.2,cy-ch*0.1,cw*0.15,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#000';
-        ctx.beginPath(); ctx.arc(cx-cw*0.14,cy-ch*0.1,cw*0.08,0,Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(cx+cw*0.26,cy-ch*0.1,cw*0.08,0,Math.PI*2); ctx.fill();
-        if(e.hp<e.maxHp){
-          const bw=Math.max(28,cw*2.2);
-          ctx.fillStyle='#111'; ctx.fillRect(cx-bw/2,cy-ch/2-10*sc,bw,5*sc);
-          ctx.fillStyle=enraged?'#c5ff6b':'#d1121b'; ctx.fillRect(cx-bw/2,cy-ch/2-10*sc,(e.hp/e.maxHp)*bw,5*sc);
-        }
-      }
-      // Wheels
-      ctx.fillStyle='#111';
-      ctx.fillRect(cx-cw/2-cw*0.2,cy-ch*0.28,cw*0.2,cw*0.26);
-      ctx.fillRect(cx+cw/2,        cy-ch*0.28,cw*0.2,cw*0.26);
-      ctx.fillRect(cx-cw/2-cw*0.2, cy+ch*0.1, cw*0.2,cw*0.26);
-      ctx.fillRect(cx+cw/2,         cy+ch*0.1, cw*0.2,cw*0.26);
-      ctx.globalAlpha=1;
-    }
-
-    // --- AIRBORNE SLIME PROJECTILES ---
-    for(const b of R.slimeBlobs){
-      if(!b.projectile) continue;
-      const sp=w2s(b.x,b.y); if(!sp||sp.depth>580) continue;
-      const r=b.r*sp.scale;
-      ctx.globalAlpha=Math.min(1,b.life*0.8);
-      ctx.fillStyle='#7bff3a'; ctx.beginPath(); ctx.arc(sp.sx,sp.sy,r,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#c5ff6b'; ctx.beginPath(); ctx.arc(sp.sx-r*0.3,sp.sy-r*0.3,r*0.38,0,Math.PI*2); ctx.fill();
-      ctx.globalAlpha=1;
-    }
-
-    // --- PROTON BULLETS ---
-    for(const b of R.bullets){
-      const sp=w2s(b.x,b.y); if(!sp||sp.depth>580) continue;
-      ctx.globalAlpha=0.9;
-      ctx.fillStyle='#ffea00'; ctx.beginPath(); ctx.arc(sp.sx,sp.sy,4*sp.scale,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#fff';    ctx.beginPath(); ctx.arc(sp.sx,sp.sy,2*sp.scale,0,Math.PI*2); ctx.fill();
-      const back=w2s(b.x-Math.cos(car.angle)*45,b.y-Math.sin(car.angle)*45);
-      if(back){ctx.strokeStyle='rgba(255,234,0,0.35)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(sp.sx,sp.sy);ctx.lineTo(back.sx,back.sy);ctx.stroke();}
-      ctx.globalAlpha=1;
     }
 
     // --- PARTICLES ---
-    for(const p of R.parts){
-      const sp=w2s(p.x,p.y); if(!sp||sp.depth>480) continue;
-      const sz=Math.max(1,p.life*5*sp.scale);
-      ctx.globalAlpha=Math.min(1,p.life*2); ctx.fillStyle=p.color;
-      ctx.fillRect(sp.sx-sz/2,sp.sy-sz/2,sz,sz); ctx.globalAlpha=1;
+    for (let i = ER.particles.length - 1; i >= 0; i--) {
+      const p = ER.particles[i];
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      p.vx *= 0.88; p.vy *= 0.88; p.life -= dt;
+      if (p.life <= 0) ER.particles.splice(i, 1);
     }
 
-    // --- ECTO-1 (fixed screen position) ---
-    drawEcto1(car);
+    // Score ticks up with distance
+    S.score = Math.max(S.score, Math.floor(ER.distance / 10));
+  }
 
-    // --- HUD ---
-    drawHUDEcto(car);
-    drawFlashText();
+  function spawnEnemy() {
+    const stage = ER.stage;
+    const pool = stage === 1 ? ['zombie','zombie','ghost','ghost','ghoul']
+               : stage === 2 ? ['zombie','ghost','ghoul','ghoul','ghost']
+               :               ['ghoul','ghoul','ghost','zombie','ghoul'];
+    const type = pool[Math.floor(Math.random() * pool.length)];
+    const lane = Math.floor(Math.random() * NUM_LANES);
+    const base = {
+      x: laneX(lane), y: -55,
+      w: 34, h: 52,
+      type, anim: Math.random() * Math.PI * 2,
+    };
+    if (type === 'zombie')     { ER.enemies.push({...base, hp:3, relSpeed: -40}); }
+    else if (type === 'ghost') { ER.enemies.push({...base, hp:1, relSpeed:  20, w:30, h:46}); }
+    else                       { ER.enemies.push({...base, hp:2, relSpeed:  80, vx: (Math.random()-0.5)*120}); }
+  }
 
-    // Scanlines
-    ctx.fillStyle='rgba(0,0,0,0.13)';
-    for(let y=0;y<H;y+=3) ctx.fillRect(0,y,W,1);
-
-    // Slime tint
-    if(S.time<car.slimedUntil){
-      ctx.fillStyle=`rgba(123,255,58,${0.11+Math.sin(S.time*8)*0.04})`;
-      ctx.fillRect(0,0,W,H);
-    }
-    // Hurt flash
-    if(S.time<car.flashUntil){
-      ctx.fillStyle='rgba(209,18,27,0.3)'; ctx.fillRect(0,0,W,H);
-    }
-
-    // Countdown
-    if(R.countdown>0){
-      ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.fillRect(0,0,W,H);
-      const n=Math.ceil(R.countdown);
-      ctx.textAlign='center';
-      ctx.fillStyle=n<=1?'#7bff3a':'#ffea00'; ctx.font='bold 80px "Press Start 2P", monospace';
-      ctx.fillText(n>1?String(n-1):'GO!',W/2,H/2+24); ctx.textAlign='left';
-    }
-
-    if(S.paused){
-      ctx.fillStyle='rgba(0,0,0,0.62)'; ctx.fillRect(0,0,W,H);
-      ctx.fillStyle='#ffea00'; ctx.font='24px "Press Start 2P", monospace'; ctx.textAlign='center';
-      ctx.fillText('PAUSED',W/2,H/2);
-      ctx.font='10px "Press Start 2P", monospace'; ctx.fillText('PRESS [P] TO RESUME',W/2,H/2+30);
-      ctx.textAlign='left';
+  function spawnParticles(x, y, n, color) {
+    for (let i = 0; i < n; i++) {
+      ER.particles.push({
+        x, y,
+        vx: (Math.random()-0.5)*150,
+        vy: (Math.random()-0.5)*150,
+        life: 0.4 + Math.random()*0.3,
+        color,
+      });
     }
   }
 
-  function drawEcto1(car){
-    const cx=W/2, cy=H*0.77;
-    const hurt=S.time<car.flashUntil&&Math.floor(S.time*20)%2===0;
-    const shielded=S.time<car.shieldUntil;
-    const slimed=S.time<car.slimedUntil;
+  function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh) {
+    return ax < bx+bw && ax+aw > bx && ay < by+bh && ay+ah > by;
+  }
 
-    ctx.save(); ctx.translate(cx,cy);
+  function erSFX_slimeSplat() { beep(120,0.15,'sine',0.1,60); noiseBurst(0.12,0.08); }
+  function erSFX_nitro()      { beep(440,0.1,'square',0.1); beep(660,0.08,'square',0.1); }
+  function erSFX_crash()      { noiseBurst(0.25,0.3); beep(100,0.3,'sawtooth',0.2,40); }
+  // expose on SFX object
+  SFX.slimeSplat = erSFX_slimeSplat;
+  SFX.nitro      = erSFX_nitro;
+  SFX.crash      = erSFX_crash;
+
+  // ---- DRAW ----
+  function drawEcto() {
+    const car = ER.car;
+
+    // --- ROAD BACKGROUND ---
+    // Grass on sides
+    ctx.fillStyle = '#0d1a08';
+    ctx.fillRect(0, 0, W, H);
+
+    // Road surface
+    ctx.fillStyle = '#1e1e1e';
+    ctx.fillRect(ROAD_LEFT, 0, ROAD_RIGHT - ROAD_LEFT, H);
+
+    // Road edge stripes
+    ctx.fillStyle = '#c82020';
+    ctx.fillRect(ROAD_LEFT,     0, 4, H);
+    ctx.fillRect(ROAD_RIGHT - 4, 0, 4, H);
+
+    // Scrolling lane dividers
+    ctx.fillStyle = 'rgba(255,240,0,0.55)';
+    for (let lane = 1; lane < NUM_LANES; lane++) {
+      const lx = ROAD_LEFT + lane * LANE_W;
+      for (let y = -80 + ER.roadOffset; y < H + 80; y += 80) {
+        ctx.fillRect(lx - 1, y, 2, 44);
+      }
+    }
+
+    // Scrolling center double-yellow
+    const midX = ROAD_LEFT + (NUM_LANES * LANE_W) / 2;
+    ctx.fillStyle = '#ffea00';
+    ctx.fillRect(midX - 2, 0, 2, H);
+    ctx.fillRect(midX + 1, 0, 2, H);
+
+    // Grass detail: trees/tombstones scrolling on sides
+    ctx.fillStyle = '#1a2a0a';
+    for (let i = 0; i < 6; i++) {
+      const ty = ((i * 130 + ER.roadOffset * 1.5) % (H + 100)) - 60;
+      // Left trees
+      ctx.fillStyle = '#1a3a0a'; ctx.fillRect(8, ty, 22, 40);
+      ctx.fillStyle = '#0d2a06'; ctx.fillRect(14, ty + 40, 10, 20);
+      // Right trees
+      ctx.fillStyle = '#1a3a0a'; ctx.fillRect(W - 30, ty + 20, 22, 40);
+      ctx.fillStyle = '#0d2a06'; ctx.fillRect(W - 24, ty + 60, 10, 20);
+      // Tombstones (stage 2+)
+      if (ER.stage >= 2) {
+        const ty2 = ((i * 110 + 60 + ER.roadOffset * 1.2) % (H + 100)) - 60;
+        ctx.fillStyle = '#4a4a5a'; ctx.fillRect(44, ty2, 16, 22);
+        ctx.fillStyle = '#3a3a4a'; ctx.fillRect(46, ty2 - 8, 12, 10);
+        ctx.fillStyle = '#666'; ctx.fillRect(52, ty2 + 4, 2, 8);  // cross
+        ctx.fillRect(49, ty2 + 8, 8, 2);
+      }
+    }
+
+    // --- SLIME BLOBS ON ROAD ---
+    for (const b of ER.slimeBlobs) {
+      const alpha = Math.min(0.8, b.life / 4);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#7bff3a';
+      ctx.beginPath(); ctx.ellipse(b.x, b.y, b.r, b.r * 0.45, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#c5ff6b';
+      ctx.beginPath(); ctx.ellipse(b.x - b.r*0.25, b.y - b.r*0.1, b.r*0.38, b.r*0.18, 0, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // --- PICKUPS ---
+    for (const pu of ER.pickups) {
+      const bob = Math.sin(pu.anim) * 4;
+      ctx.save(); ctx.translate(pu.x, pu.y + bob);
+      if (pu.type === 'wrench') {
+        ctx.fillStyle = '#aaaaaa'; ctx.fillRect(-5, -10, 10, 20);
+        ctx.fillRect(-8, -12, 16, 5); ctx.fillRect(-8, 7, 16, 5);
+      } else if (pu.type === 'nitro') {
+        ctx.fillStyle = '#ffea00';
+        ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#ff8800'; ctx.font = '14px monospace'; ctx.textAlign = 'center';
+        ctx.fillText('⚡', 0, 5); ctx.textAlign = 'left';
+      } else {
+        ctx.fillStyle = '#4488ff';
+        ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#88ccff';
+        ctx.beginPath(); ctx.arc(-5, -4, 5, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // --- ENEMY CARS ---
+    for (const e of ER.enemies) {
+      drawEnemyCar(e);
+    }
+
+    // --- SLIME DRIPS (falling) ---
+    for (const d of ER.slimeDrips) {
+      ctx.fillStyle = '#7bff3a';
+      ctx.beginPath(); ctx.ellipse(d.x, d.y, 7, 10, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#c5ff6b';
+      ctx.beginPath(); ctx.arc(d.x-2, d.y-3, 3, 0, Math.PI*2); ctx.fill();
+    }
+
+    // --- SLIMER ---
+    if (ER.slimer && ER.slimer.alive) {
+      drawSlimer2D();
+    }
+
+    // --- PROTON BULLETS ---
+    for (const b of ER.bullets) {
+      ctx.fillStyle = '#ffea00';
+      ctx.fillRect(b.x - 3, b.y - 8, 6, 16);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(b.x - 1, b.y - 6, 2, 12);
+      // glow
+      ctx.fillStyle = 'rgba(255,234,0,0.3)';
+      ctx.fillRect(b.x - 5, b.y - 10, 10, 20);
+    }
+
+    // --- PARTICLES ---
+    for (const p of ER.particles) {
+      ctx.globalAlpha = Math.min(1, p.life * 2.5);
+      ctx.fillStyle = p.color;
+      const s = Math.max(2, p.life * 8);
+      ctx.fillRect(p.x - s/2, p.y - s/2, s, s);
+    }
+    ctx.globalAlpha = 1;
+
+    // --- ECTO-1 ---
+    drawEcto1_2D(car);
+
+    // --- HUD ---
+    drawHUD_Ecto2D(car);
+    drawFlashText();
+
+    // Slime tint
+    if (S.time < car.slimedUntil) {
+      ctx.fillStyle = `rgba(123,255,58,${0.10 + Math.sin(S.time*7)*0.04})`;
+      ctx.fillRect(0, 0, W, H);
+    }
+    // Hurt flash
+    if (S.time < car.flashUntil) {
+      ctx.fillStyle = 'rgba(209,18,27,0.28)';
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Scanlines
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    for (let y = 0; y < H; y += 3) ctx.fillRect(0, y, W, 1);
+
+    // Pause
+    if (S.paused) {
+      ctx.fillStyle = 'rgba(0,0,0,0.62)'; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = '#ffea00'; ctx.font = '24px "Press Start 2P", monospace'; ctx.textAlign = 'center';
+      ctx.fillText('PAUSED', W/2, H/2);
+      ctx.font = '10px "Press Start 2P", monospace'; ctx.fillText('PRESS [P] TO RESUME', W/2, H/2+30);
+      ctx.textAlign = 'left';
+    }
+  }
+
+  function drawEnemyCar(e) {
+    ctx.save(); ctx.translate(e.x, e.y);
+    const w = e.w, h = e.h;
+    if (e.type === 'zombie') {
+      // Rusty brown wreck
+      ctx.fillStyle = '#5a2a10'; ctx.fillRect(-w/2, -h/2, w, h);
+      ctx.fillStyle = '#3a1008'; ctx.fillRect(-w/2+1, -h/2+1, w-2, h*0.3);
+      ctx.fillStyle = '#7a4020'; ctx.fillRect(-w/2, h*0.05, w, h*0.12);
+      // Zombie hand
+      ctx.fillStyle = '#7a9a40'; ctx.fillRect(-w/2-10, -2, 12, 6);
+      // Wheels
+      ctx.fillStyle = '#111';
+      ctx.fillRect(-w/2-5, -h/3, 5, 10); ctx.fillRect(w/2, -h/3, 5, 10);
+      ctx.fillRect(-w/2-5, h/6, 5, 10);  ctx.fillRect(w/2, h/6, 5, 10);
+      // Windshield
+      ctx.fillStyle = '#5a7060'; ctx.fillRect(-w/2+3, -h/2+3, w-6, h*0.28);
+    } else if (e.type === 'ghost') {
+      // Translucent ethereal car
+      ctx.globalAlpha = 0.55 + Math.sin(S.time * 4 + e.anim) * 0.25;
+      ctx.fillStyle = '#c0b0e0'; ctx.fillRect(-w/2, -h/2, w, h);
+      ctx.fillStyle = '#9070cc'; ctx.fillRect(-w/2+1, -h/2+1, w-2, h*0.3);
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(-w/4-2, -h/4, w*0.2, w*0.2);
+      ctx.fillRect(w*0.05, -h/4, w*0.2, w*0.2);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(-w/2-4, -h/3, 4, 9); ctx.fillRect(w/2, -h/3, 4, 9);
+      ctx.fillRect(-w/2-4, h/6, 4, 9);  ctx.fillRect(w/2, h/6, 4, 9);
+      ctx.globalAlpha = 1;
+    } else {
+      // Ghoul — purple speed racer
+      ctx.fillStyle = '#5a0880'; ctx.fillRect(-w/2, -h/2, w, h);
+      ctx.fillStyle = '#8810bb'; ctx.fillRect(-w/2+1, -h/2+1, w-2, h*0.3);
+      ctx.fillStyle = '#ffea00'; ctx.fillRect(-w/2+3, -h/3, w-6, h*0.18);
+      // Flame decals
+      ctx.fillStyle = '#ff5500';
+      ctx.fillRect(-w/2+3, h/4, w*0.28, h*0.26);
+      ctx.fillRect(w/2-w*0.28-3, h/4, w*0.28, h*0.26);
+      ctx.fillStyle = '#ffaa00';
+      ctx.fillRect(-w/2+5, h/4, w*0.15, h*0.18);
+      ctx.fillRect(w/2-w*0.15-3, h/4, w*0.15, h*0.18);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(-w/2-5, -h/3, 5, 10); ctx.fillRect(w/2, -h/3, 5, 10);
+      ctx.fillRect(-w/2-5, h/6, 5, 10);  ctx.fillRect(w/2, h/6, 5, 10);
+    }
+    ctx.restore();
+  }
+
+  function drawSlimer2D() {
+    const sl = ER.slimer;
+    const r = sl.r;
+    const bob = Math.sin(sl.anim * 1.5) * 5;
+    const enraged = sl.phase === 2;
+
+    ctx.save(); ctx.translate(sl.x, sl.y + bob);
 
     // Shadow
-    ctx.fillStyle='rgba(0,0,0,0.3)';
-    ctx.beginPath(); ctx.ellipse(2,7,22,8,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath(); ctx.ellipse(3, r+4, r*0.8, r*0.22, 0, 0, Math.PI*2); ctx.fill();
 
     // Body
-    ctx.fillStyle=hurt?'#ff9999':slimed?'#aaffaa':'#e8e6d4';
-    ctx.fillRect(-14,-22,28,44);
+    const wobble = Math.sin(sl.anim * 3) * r * 0.06;
+    ctx.fillStyle = '#0d4a2e';
+    ctx.beginPath(); ctx.ellipse(3, 3, r+wobble+2, r+2, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = enraged ? '#c5ff6b' : '#7bff3a';
+    ctx.beginPath(); ctx.ellipse(0, 0, r+wobble, r, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#dfff9a';
+    ctx.beginPath(); ctx.ellipse(-r*0.28, -r*0.28, r*0.32, r*0.18, 0, 0, Math.PI*2); ctx.fill();
 
-    // Red stripe
-    ctx.fillStyle='#d1121b'; ctx.fillRect(-14,-6,28,6);
+    // Eyes
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(-r*0.28, -r*0.1, r*0.2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc( r*0.28, -r*0.1, r*0.2, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.arc(-r*0.22, -r*0.08, r*0.1, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc( r*0.34, -r*0.08, r*0.1, 0, Math.PI*2); ctx.fill();
 
-    // Roof equipment
-    ctx.fillStyle='#888'; ctx.fillRect(-10,-28,20,8);
-    ctx.fillStyle='#ffea00';
-    ctx.fillRect(-8,-27,4,2); ctx.fillRect(-1,-27,4,2); ctx.fillRect(6,-27,4,2);
-    // Proton cannon barrel
-    ctx.fillStyle='#555'; ctx.fillRect(12,-24,9,4);
-    ctx.fillStyle='#ffea00'; ctx.fillRect(19,-23,3,2);
+    // Grin
+    ctx.fillStyle = '#d1121b';
+    ctx.fillRect(-r*0.3, r*0.18, r*0.6, r*0.18);
+
+    // Dripping slime arms
+    ctx.fillStyle = enraged ? '#c5ff6b' : '#7bff3a';
+    ctx.beginPath(); ctx.arc(-r-4, r*0.1, 10, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc( r+4, r*0.1, 10, 0, Math.PI*2); ctx.fill();
+
+    // HP bar
+    if (sl.hp < sl.maxHp) {
+      const bw = r*2.5;
+      ctx.fillStyle = '#111'; ctx.fillRect(-bw/2, -r-18, bw, 9);
+      ctx.fillStyle = enraged ? '#c5ff6b' : '#d1121b';
+      ctx.fillRect(-bw/2, -r-18, (sl.hp/sl.maxHp)*bw, 9);
+      ctx.fillStyle = '#fff'; ctx.font = '6px "Press Start 2P", monospace'; ctx.textAlign = 'center';
+      ctx.fillText('SLIMER', 0, -r-22); ctx.textAlign = 'left';
+    }
+
+    ctx.restore();
+  }
+
+  function drawEcto1_2D(car) {
+    const cx = car.x, cy = car.y;
+    const hurt    = S.time < car.flashUntil   && Math.floor(S.time * 18) % 2 === 0;
+    const shielded= S.time < car.shieldUntil;
+    const nitro   = S.time < car.nitroUntil;
+    const slimed  = S.time < car.slimedUntil;
+
+    ctx.save(); ctx.translate(cx, cy);
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath(); ctx.ellipse(2, 30, 18, 7, 0, 0, Math.PI*2); ctx.fill();
+
+    // Body
+    ctx.fillStyle = hurt ? '#ff9999' : slimed ? '#aaffaa' : '#e8e6d4';
+    ctx.fillRect(-17, -28, 34, 56);
+
+    // Red livery stripe
+    ctx.fillStyle = '#d1121b';
+    ctx.fillRect(-17, -8, 34, 8);
+
+    // Roof rack + equipment
+    ctx.fillStyle = '#888'; ctx.fillRect(-13, -34, 26, 9);
+    ctx.fillStyle = '#ffea00'; ctx.fillRect(-11,-33,4,2); ctx.fillRect(-2,-33,4,2); ctx.fillRect(7,-33,4,2);
+
+    // Proton cannon (right side of roof)
+    ctx.fillStyle = '#555'; ctx.fillRect(14, -30, 10, 5);
+    ctx.fillStyle = '#ffea00'; ctx.fillRect(22, -29, 4, 3);
 
     // Windshield
-    ctx.fillStyle='#a0c8ff'; ctx.fillRect(-10,-20,20,12);
-    ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.fillRect(-8,-19,6,5);
+    ctx.fillStyle = '#88aacc'; ctx.fillRect(-12,-26,24,14);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillRect(-10,-24,8,6);
 
     // Side windows
-    ctx.fillStyle='#6080a0';
-    ctx.fillRect(-11,-2,10,9); ctx.fillRect(1,-2,10,9);
+    ctx.fillStyle = '#6080a0';
+    ctx.fillRect(-13, -2, 11, 11); ctx.fillRect(2, -2, 11, 11);
 
     // Wheels
-    ctx.fillStyle='#1a1a1a';
-    ctx.fillRect(-18,-18,6,10); ctx.fillRect(12,-18,6,10);
-    ctx.fillRect(-18,10,6,10);  ctx.fillRect(12,10,6,10);
-    ctx.fillStyle='#777';
-    ctx.fillRect(-16,-16,3,6); ctx.fillRect(13,-16,3,6);
-    ctx.fillRect(-16,12,3,6);  ctx.fillRect(13,12,3,6);
+    ctx.fillStyle = '#181818';
+    ctx.fillRect(-22,-20,6,12); ctx.fillRect(16,-20,6,12);
+    ctx.fillRect(-22, 10,6,12); ctx.fillRect(16, 10,6,12);
+    ctx.fillStyle = '#777';
+    ctx.fillRect(-20,-18,3,8); ctx.fillRect(17,-18,3,8);
+    ctx.fillRect(-20,12,3,8);  ctx.fillRect(17,12,3,8);
 
     // Headlights
-    ctx.fillStyle='#ffffc0'; ctx.fillRect(-12,-25,7,4); ctx.fillRect(5,-25,7,4);
-    // Taillights
-    ctx.fillStyle='#ff2200'; ctx.fillRect(-12,20,6,3); ctx.fillRect(6,20,6,3);
+    ctx.fillStyle = '#ffffc0'; ctx.fillRect(-14,-30,8,5); ctx.fillRect(6,-30,8,5);
 
-    // ECTO-1 plate
-    ctx.fillStyle='#ffea00'; ctx.font='5px "Press Start 2P", monospace'; ctx.textAlign='center';
-    ctx.fillText('ECTO-1',0,27);
+    // Taillights
+    ctx.fillStyle = '#ff2200'; ctx.fillRect(-14,24,7,4); ctx.fillRect(7,24,7,4);
+
+    // Plate
+    ctx.fillStyle = '#ffea00'; ctx.font = '5px "Press Start 2P", monospace'; ctx.textAlign = 'center';
+    ctx.fillText('ECTO-1', 0, 33); ctx.textAlign = 'left';
 
     // Shield aura
-    if(shielded){
-      ctx.strokeStyle='#4488ff'; ctx.lineWidth=2;
-      ctx.globalAlpha=0.55+Math.sin(S.time*8)*0.25;
-      ctx.beginPath(); ctx.ellipse(0,0,28,32,0,0,Math.PI*2); ctx.stroke();
-      ctx.globalAlpha=1;
+    if (shielded) {
+      ctx.strokeStyle = '#4488ff'; ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.6 + Math.sin(S.time*8)*0.2;
+      ctx.beginPath(); ctx.ellipse(0, 0, 28, 36, 0, 0, Math.PI*2); ctx.stroke();
+      ctx.globalAlpha = 1;
     }
 
     // Nitro flames
-    if(S.time<car.nitroUntil){
-      ctx.fillStyle='#ff5500'; ctx.fillRect(-8,22,5,8+Math.random()*6); ctx.fillRect(3,22,5,8+Math.random()*6);
-      ctx.fillStyle='#ffea00'; ctx.fillRect(-7,22,3,5+Math.random()*4); ctx.fillRect(4,22,3,5+Math.random()*4);
+    if (nitro) {
+      ctx.fillStyle = '#ff5500';
+      ctx.fillRect(-10, 28, 6, 9  + Math.random()*7);
+      ctx.fillRect(  4, 28, 6, 9  + Math.random()*7);
+      ctx.fillStyle = '#ffea00';
+      ctx.fillRect(-9,  28, 3, 6  + Math.random()*4);
+      ctx.fillRect(  5, 28, 3, 6  + Math.random()*4);
     }
 
-    // Proton stream firing
-    if(keys[' ']&&R.car.shootCooldown>0.14){
-      ctx.strokeStyle='#ffea00'; ctx.lineWidth=3; ctx.globalAlpha=0.8;
-      ctx.beginPath(); ctx.moveTo(0,-24); ctx.lineTo(0,-62); ctx.stroke();
-      ctx.strokeStyle='#fff'; ctx.lineWidth=1;
-      ctx.beginPath(); ctx.moveTo(0,-24); ctx.lineTo(0,-62); ctx.stroke();
-      ctx.globalAlpha=1;
+    // Proton fire VFX
+    if (keys[' '] && car.shootCooldown > 0.12) {
+      ctx.strokeStyle = '#ffea00'; ctx.lineWidth = 3; ctx.globalAlpha = 0.85;
+      ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(0, -70); ctx.stroke();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(0, -70); ctx.stroke();
+      ctx.globalAlpha = 1;
     }
 
-    ctx.restore(); ctx.textAlign='left';
+    ctx.restore();
   }
 
-  function drawHUDEcto(car){
-    ctx.fillStyle='rgba(0,0,0,0.78)'; ctx.fillRect(0,0,W,40);
-    ctx.fillStyle='#7bff3a'; ctx.fillRect(0,40,W,2);
+  function drawHUD_Ecto2D(car) {
+    // Top bar
+    ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(0, 0, W, 40);
+    ctx.fillStyle = '#7bff3a'; ctx.fillRect(0, 40, W, 2);
 
-    ctx.font='12px "Press Start 2P", monospace'; ctx.fillStyle='#7bff3a'; ctx.textAlign='left';
-    ctx.fillText('HP',12,25);
-    for(let i=0;i<car.maxHp;i++){
-      const f=i<car.hp;
-      ctx.fillStyle=f?'#d1121b':'#333'; ctx.fillRect(44+i*12,14,9,13);
-      ctx.fillStyle=f?'#ff4444':'#555'; ctx.fillRect(45+i*12,15,7,4);
+    // HP
+    ctx.font = '12px "Press Start 2P", monospace';
+    ctx.fillStyle = '#7bff3a'; ctx.textAlign = 'left';
+    ctx.fillText('HP', 12, 25);
+    for (let i = 0; i < car.maxHp; i++) {
+      const filled = i < car.hp;
+      ctx.fillStyle = filled ? '#d1121b' : '#333'; ctx.fillRect(44+i*12, 14, 9, 13);
+      ctx.fillStyle = filled ? '#ff4444' : '#555'; ctx.fillRect(45+i*12, 15, 7, 4);
     }
 
-    ctx.fillStyle='#ffea00'; ctx.textAlign='center';
-    ctx.fillText(`SCORE ${String(S.score).padStart(6,'0')}`,W/2,25);
+    // Score
+    ctx.fillStyle = '#ffea00'; ctx.textAlign = 'center';
+    ctx.fillText(`SCORE ${String(S.score).padStart(6,'0')}`, W/2, 25);
 
-    ctx.textAlign='right'; ctx.fillStyle='#7bff3a';
-    ctx.fillText(`LAP ${car.lapsCompleted+1}/${LAPS_PER_STAGE}  STG ${R.stage}/${TOTAL_STAGES}`,W-12,25);
+    // Stage / distance
+    ctx.textAlign = 'right'; ctx.fillStyle = '#7bff3a';
+    ctx.fillText(`STG ${ER.stage}/3`, W-12, 25);
 
-    // Status
-    ctx.font='7px "Press Start 2P", monospace'; ctx.textAlign='left';
-    const alive=R.enemies.filter(e=>e.alive).length;
-    ctx.fillStyle='#d1121b'; ctx.fillText(`ENEMIES: ${alive}`,12,H-22);
+    // Stage progress bar
+    const pct = Math.min(1, ER.stageDist / ER.stageLen);
+    ctx.fillStyle = '#111'; ctx.fillRect(W-140, H-28, 128, 10);
+    ctx.fillStyle = '#7bff3a'; ctx.fillRect(W-140, H-28, pct*128, 10);
+    ctx.fillStyle = '#fff'; ctx.font = '6px "Press Start 2P", monospace';
+    ctx.textAlign = 'right'; ctx.fillText('STAGE', W-144, H-20);
 
-    let xOff=120;
-    if(S.time<car.nitroUntil){ctx.fillStyle='#ffea00';ctx.fillText(`NITRO ${(car.nitroUntil-S.time).toFixed(1)}s`,xOff,H-22);xOff+=120;}
-    if(S.time<car.shieldUntil){ctx.fillStyle='#4488ff';ctx.fillText(`SHIELD ${(car.shieldUntil-S.time).toFixed(1)}s`,xOff,H-22);xOff+=130;}
-    if(S.time<car.slimedUntil){ctx.fillStyle='#7bff3a';ctx.fillText(`SLIMED ${(car.slimedUntil-S.time).toFixed(1)}s`,xOff,H-22);}
+    // Status effects
+    ctx.font = '7px "Press Start 2P", monospace'; ctx.textAlign = 'left';
+    let xOff = 12;
+    if (S.time < car.nitroUntil)   { ctx.fillStyle='#ffea00'; ctx.fillText(`NITRO ${(car.nitroUntil-S.time).toFixed(1)}s`,xOff,H-14); xOff+=115; }
+    if (S.time < car.shieldUntil)  { ctx.fillStyle='#4488ff'; ctx.fillText(`SHIELD ${(car.shieldUntil-S.time).toFixed(1)}s`,xOff,H-14); xOff+=125; }
+    if (S.time < car.slimedUntil)  { ctx.fillStyle='#7bff3a'; ctx.fillText(`SLIMED ${(car.slimedUntil-S.time).toFixed(1)}s`,xOff,H-14); }
 
-    // Speed bar
-    const spdFrac=Math.abs(car.speed)/(S.time<car.nitroUntil?500:310);
-    ctx.fillStyle='#111'; ctx.fillRect(W-92,H-32,82,11);
-    ctx.fillStyle=spdFrac>0.82?'#ffea00':'#7bff3a'; ctx.fillRect(W-92,H-32,spdFrac*82,11);
-    ctx.fillStyle='#fff'; ctx.font='6px "Press Start 2P", monospace'; ctx.textAlign='right';
-    ctx.fillText('SPD',W-10,H-23); ctx.textAlign='left';
+    ctx.textAlign = 'left';
   }
+
 
   // ================================================================
   //  PROTON PANIC SPRITE DRAWERS (unchanged)
