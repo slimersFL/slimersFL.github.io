@@ -199,27 +199,98 @@
     crash()      { noiseBurst(0.25,0.3); beep(100,0.3,'sawtooth',0.2,40); },
   };
 
+  // 8-bit tracks. Each has: tempo, bass, lead, and optional drums (k=kick,s=snare,h=hat,_=rest).
+  // Lead arrays are at 16th-note resolution (16 entries per loop).  Bass and drums sync to it.
   const TRACKS = {
-    title:  { tempo:140, bass:[196,196,0,233,220,220,0,196],    lead:[587,0,523,0,494,0,466,440] },
-    level1: { tempo:170, bass:[220,220,330,220,220,220,294,220], lead:[440,523,440,523,587,523,494,440] },
-    level2: { tempo:185, bass:[196,220,247,220,196,220,247,261], lead:[392,440,494,440,392,440,494,523] },
-    boss:   { tempo:200, bass:[110,110,110,0,110,147,147,165],   lead:[220,0,294,247,220,0,294,330] },
-    race:   { tempo:160, bass:[165,165,196,165,165,165,220,185], lead:[330,0,392,0,330,294,0,330] },
-    race2:  { tempo:180, bass:[147,147,175,147,147,147,196,165], lead:[294,0,349,0,294,262,0,294] },
-    rboss:  { tempo:200, bass:[110,110,0,110,131,0,110,147],     lead:[220,0,262,247,220,0,247,261] },
+    title:  {
+      tempo: 140,
+      bass: [196,196, 0, 233, 220,220, 0, 196, 196,196, 0, 233, 220,220, 0, 196],
+      lead: [587, 0, 523, 0, 494, 0, 466, 440, 587, 0, 523, 0, 494, 0, 440, 392],
+      drums:'k_s_k__sk_s_k_s_',
+    },
+    level1: {
+      tempo: 170,
+      bass: [220,220,330,220, 220,220,294,220, 220,220,330,220, 247,247,294,220],
+      lead: [440,523,440,523, 587,523,494,440, 440,523,440,523, 659,587,523,440],
+      drums:'k_s_k__sk_s_k_s_',
+    },
+    level2: {
+      tempo: 185,
+      bass: [196,220,247,220, 196,220,247,261, 196,220,247,220, 196,220,261,196],
+      lead: [392,440,494,440, 392,440,494,523, 587,523,494,440, 392,440,494,523],
+      drums:'k_s_k_s_k_sskks_',
+    },
+    boss:   {
+      tempo: 205,
+      bass: [110,110,110, 0, 110,147,147,165, 110,110,131, 0, 110,147,165,147],
+      lead: [220, 0, 294,247, 220, 0, 294,330, 220, 0, 247,294, 330, 0, 294,247],
+      drums:'kkskskskkksk_sks',
+    },
+
+    // ECTO RACER tracks — funky, surf-rock ghostbusters vibe, intensifying per stage
+    // Stage 1 — driving groove, mid tempo, just bass + lead + simple beat
+    race1:  {
+      tempo: 156,
+      bass: [165,  0,165,  0, 196,  0,165,  0, 165,  0,165,247, 220,  0,196,  0],
+      lead: [330,  0,392,  0, 330,294,  0,330, 392,  0,330,  0, 294,  0,330,  0],
+      drums:'k_s_k_s_k_s_k_s_',
+    },
+    // Stage 2 — pickup tempo, busier lead, harder beat
+    race2:  {
+      tempo: 178,
+      bass: [147,  0,175,147, 165,175,196,175, 147,  0,175,147, 196,175,220,175],
+      lead: [294,349,294,349, 392,349,294,262, 294,349,392,440, 392,349,294,262],
+      drums:'k_s_k_skk_s_kssk',
+    },
+    // Stage 3 — full intensity, fastest tempo, dense drums for the boss showdown
+    race3:  {
+      tempo: 200,
+      bass: [110,110,131,  0, 110,147,165,131, 110,110,131,165, 196,165,131,110],
+      lead: [220,247,294,247, 220,  0,294,330, 392,330,294,247, 220,294,330,392],
+      drums:'kksk_skskks_skks',
+    },
+    // Final boss reprise — even more aggressive, used when Slimer is on screen during stage 3
+    rboss:  {
+      tempo: 218,
+      bass: [110,  0,110,131, 110,  0,131,147, 110,  0,110,131, 165,147,131,110],
+      lead: [220,330,247,330, 220,294,247,330, 392,330,294,247, 440,392,330,294],
+      drums:'kksks_kskskskskk',
+    },
   };
 
   function startMusic(trackName) {
     stopMusic();
     if (!audioCtx || S.muted) return;
     const t = TRACKS[trackName]; if (!t) return;
-    const stepLen = 60 / t.tempo / 2; let step = 0;
+    const stepLen = 60 / t.tempo / 2; let step = 0;   // 16th notes
     musicTimer = setInterval(() => {
       if (S.muted || S.paused) return;
-      const bass = t.bass[step % t.bass.length];
-      const lead = t.lead[step % t.lead.length];
-      if (bass) beep(bass, stepLen*0.9, 'triangle', 0.08);
-      if (lead) beep(lead, stepLen*0.8, 'square', 0.06);
+      const bL = t.bass.length, lL = t.lead.length;
+      const bass = t.bass[step % bL];
+      const lead = t.lead[step % lL];
+      if (bass) {
+        // Rich bass: triangle + sub octave saw
+        beep(bass,        stepLen*0.95, 'triangle', 0.10);
+        beep(bass / 2,    stepLen*0.95, 'sawtooth', 0.04);
+      }
+      if (lead) {
+        beep(lead, stepLen*0.85, 'square', 0.07);
+      }
+      // Drums
+      if (t.drums) {
+        const d = t.drums[step % t.drums.length];
+        if (d === 'k') {
+          // Kick: low triangle pitch sweep
+          beep(120, 0.08, 'triangle', 0.18, 50);
+        } else if (d === 's') {
+          // Snare: short noise burst
+          noiseBurst(0.06, 0.10);
+          beep(220, 0.04, 'square', 0.04, 110);
+        } else if (d === 'h') {
+          // Hat: high noise tick
+          noiseBurst(0.02, 0.04);
+        }
+      }
       step++;
     }, stepLen * 1000);
   }
@@ -293,7 +364,7 @@
       for(let i=0;i<5;i++) enemies.push(makeEnemy('skeleton',W*0.75+rand(-30,30),H*0.4+rand(-30,30)));
       pickups.push(makePU('beer',W*0.2,H*0.25)); pickups.push(makePU('snack',W*0.8,H*0.8));
     } else if(n===3){
-      boss={x:W/2,y:110,r:40,hp:40,maxHp:40,phase:1,vx:2,vy:0.6,spitCooldown:1.2,anim:0};
+      boss={x:W/2,y:110,r:40,hp:60,maxHp:60,phase:1,vx:2.4,vy:0.7,spitCooldown:1.0,anim:0};
       pickups.push(makePU('pizza',60,H-60)); pickups.push(makePU('beer',W-60,H-60)); pickups.push(makePU('snack',W/2,H-40));
     }
   }
@@ -383,8 +454,8 @@
       if(boss.y<boss.r+50||boss.y>H/2) boss.vy*=-1;
       boss.spitCooldown-=dt;
       if(boss.spitCooldown<=0){
-        boss.spitCooldown=boss.phase===2?0.7:1.3;
-        const bdx=player.x-boss.x,bdy=player.y-boss.y,spits=boss.phase===2?3:1;
+        boss.spitCooldown=boss.phase===2?0.5:1.0;
+        const bdx=player.x-boss.x,bdy=player.y-boss.y,spits=boss.phase===2?5:2;
         for(let k=0;k<spits;k++){
           const ang=Math.atan2(bdy,bdx)+(k-(spits-1)/2)*0.22;
           enemies.push({x:boss.x,y:boss.y+boss.r,vx:Math.cos(ang)*180,vy:Math.sin(ang)*180,hp:1,type:'spit',r:8,anim:0,_spit:true});
@@ -469,16 +540,18 @@
       slimer: null,
       // Spawning
       spawnTimer:   0,
-      spawnRate:    1.8,
+      spawnRate:    1.15,
       pickupTimer:  0,
-      pickupRate:   6,
-      slimerTimer:  12,
+      pickupRate:   8,
+      // Boss timing (no longer random ambient — boss arrives at end of stage)
+      bossWarningShown: false,
       // Scoring / progression
       distance:  0,          // px scrolled = score base
       stage:     1,
       stageDist: 0,          // distance within current stage
-      stageLen:  3000,       // px before next stage
-      speed:     220,        // base scroll speed px/s
+      stageLen:  9000,       // px of "drive phase" before boss spawns
+      bossPhase: false,      // true once boss has appeared for this stage
+      speed:     260,        // base scroll speed px/s
       gameTime:  0,
     };
   }
@@ -487,7 +560,7 @@
     S.level = 1; S.score = 0;
     erInit();
     S.scene = 'play'; S.paused = false;
-    startMusic('race');
+    startMusic('race1');
     canvas.focus();
     flash('STAGE 1 — SPOOK ROAD', 2.0);
   }
@@ -498,15 +571,21 @@
     if (ER.stage > 3) { win(); return; }
     // Keep car hp, reset spawn timers, increase speed
     ER.stageDist  = 0;
-    ER.speed     += 60;
-    ER.spawnRate  = Math.max(0.7, ER.spawnRate - 0.25);
+    ER.bossPhase  = false;
+    ER.bossWarningShown = false;
+    ER.speed     += 80;
+    // Each stage gets progressively longer (more distance to drive)
+    // Stage 1: 9000px, Stage 2: 12000px, Stage 3: 15000px
+    ER.stageLen   = 9000 + (ER.stage - 1) * 3000;
+    ER.spawnRate  = Math.max(0.45, ER.spawnRate - 0.15);
     ER.enemies    = [];
     ER.slimeDrips = [];
     ER.slimeBlobs = [];
     ER.slimer     = null;
-    ER.slimerTimer = 10;
     S.scene = 'play';
-    startMusic(ER.stage === 3 ? 'rboss' : 'race2');
+    // Each stage gets its own intensifying track
+    const tracks = { 1:'race1', 2:'race2', 3:'race3' };
+    startMusic(tracks[ER.stage] || 'race1');
     const names = ['','STAGE 1 — SPOOK ROAD','STAGE 2 — GRAVEYARD RUN','STAGE 3 — SLIMER SHOWDOWN'];
     flash(names[ER.stage] || `STAGE ${ER.stage}`, 2.0);
   }
@@ -525,16 +604,53 @@
               : ER.speed;
     ER.roadOffset  = (ER.roadOffset + spd * dt) % 80;
     ER.distance   += spd * dt;
-    ER.stageDist  += spd * dt;
+    // Only count progress toward stage end during the drive phase
+    if (!ER.bossPhase) ER.stageDist += spd * dt;
 
-    // Stage progression
-    if (ER.stageDist >= ER.stageLen) {
-      ER.stageDist = 0;
-      S.score += 500;
-      SFX.levelClear();
-      S.scene = 'level_clear';
-      stopMusic();
-      return;
+    // --- BOSS WARNING (3 seconds before boss appears) ---
+    if (!ER.bossPhase && !ER.bossWarningShown && ER.stageDist >= ER.stageLen - 800) {
+      ER.bossWarningShown = true;
+      flash('SLIMER APPROACHING!', 2.5);
+    }
+
+    // --- SPAWN BOSS at end of drive phase ---
+    if (!ER.bossPhase && ER.stageDist >= ER.stageLen) {
+      ER.bossPhase = true;
+      // Boss HP scales hard with stage: 1=22, 2=36, 3=55
+      const hp = ER.stage === 3 ? 55 : ER.stage === 2 ? 36 : 22;
+      // Boss spit cadence also scales (lower = more frequent)
+      const spitRate = ER.stage === 3 ? 0.95 : ER.stage === 2 ? 1.25 : 1.55;
+      ER.slimer = {
+        x: ROAD_LEFT + (ROAD_RIGHT - ROAD_LEFT) / 2,
+        y: -60,
+        r: 38, hp, maxHp: hp,
+        vx: (Math.random() < 0.5 ? -1 : 1) * (140 + ER.stage * 30),
+        vy: 80,
+        alive: true, phase: 1,
+        spitTimer: 0.5, spitRate,
+        bounceTimer: 0, targetY: 90 + Math.random() * 80,
+        anim: 0,
+        speed: 90 + ER.stage * 25,
+      };
+      // Switch to boss music intensity
+      const bossTracks = { 1:'rboss', 2:'rboss', 3:'rboss' };
+      startMusic('rboss');
+      flash(`STAGE ${ER.stage} BOSS — SLIMER!`, 2.5);
+      SFX.boss();
+    }
+
+    // --- STAGE CLEAR (boss defeated) ---
+    if (ER.bossPhase && (!ER.slimer || !ER.slimer.alive)) {
+      // small celebration delay so the death FX play out
+      ER.bossClearDelay = (ER.bossClearDelay || 0) + dt;
+      if (ER.bossClearDelay >= 1.6) {
+        ER.bossClearDelay = 0;
+        S.score += 1000;
+        SFX.levelClear();
+        S.scene = 'level_clear';
+        stopMusic();
+        return;
+      }
     }
 
     // --- STEER ---
@@ -594,7 +710,8 @@
             flash('SLIMER BUSTED!', 2.0);
             SFX.boss();
           } else if (sl.hp < sl.maxHp / 2 && sl.phase === 1) {
-            sl.phase = 2; sl.speed *= 1.5; sl.spitRate *= 0.55;
+            sl.phase = 2; sl.speed *= 1.7; sl.spitRate *= 0.45;
+            sl.vx *= 1.4;
             flash('SLIMER ENRAGED!', 1.5); SFX.boss();
           }
           hit = true;
@@ -603,10 +720,11 @@
       if (hit) ER.bullets.splice(i, 1);
     }
 
-    // --- SPAWN ENEMIES ---
+    // --- SPAWN ENEMIES (slower during boss phase to keep focus on Slimer) ---
     ER.spawnTimer -= dt;
     if (ER.spawnTimer <= 0) {
-      ER.spawnTimer = ER.spawnRate * (0.7 + Math.random() * 0.6);
+      const rateMult = ER.bossPhase ? 2.2 : 1.0;
+      ER.spawnTimer = ER.spawnRate * rateMult * (0.7 + Math.random() * 0.6);
       spawnEnemy();
     }
 
@@ -619,24 +737,7 @@
       ER.pickups.push({ x: laneX(lane), y: -30, type: types[Math.floor(Math.random()*types.length)], anim: 0 });
     }
 
-    // --- SPAWN SLIMER ---
-    ER.slimerTimer -= dt;
-    if (ER.slimerTimer <= 0 && (!ER.slimer || !ER.slimer.alive)) {
-      ER.slimerTimer = 18 + Math.random() * 8;
-      const hp = ER.stage === 3 ? 20 : 12;
-      ER.slimer = {
-        x: ROAD_LEFT + Math.random() * (ROAD_RIGHT - ROAD_LEFT),
-        y: -60,
-        r: 36, hp, maxHp: hp,
-        vx: (Math.random() - 0.5) * 140,
-        vy: 80,
-        alive: true, phase: 1,
-        spitTimer: 0, spitRate: 1.8,
-        bounceTimer: 0, targetY: 80 + Math.random() * 100,
-        anim: 0,
-        speed: 90,
-      };
-    }
+    // (Slimer is now spawned only at the end of each stage as the stage boss)
 
     // --- UPDATE ENEMIES ---
     for (let i = ER.enemies.length - 1; i >= 0; i--) {
@@ -682,14 +783,16 @@
       sl.spitTimer -= dt;
       if (sl.spitTimer <= 0) {
         sl.spitTimer = sl.spitRate;
-        const numDrips = sl.phase === 2 ? 3 : 1;
+        // More drips when enraged or on later stages
+        const baseDrips = sl.phase === 2 ? 4 : 2;
+        const numDrips = baseDrips + (ER.stage - 1);   // st1: 2/4, st2: 3/5, st3: 4/6
         for (let k = 0; k < numDrips; k++) {
-          const ang = Math.PI/2 + (k - (numDrips-1)/2) * 0.35;
+          const ang = Math.PI/2 + (k - (numDrips-1)/2) * 0.32;
           ER.slimeDrips.push({
             x: sl.x + (Math.random()-0.5)*sl.r,
             y: sl.y + sl.r,
-            vx: Math.cos(ang) * 60 + (Math.random()-0.5)*40,
-            vy: Math.sin(ang) * 200 + 80,
+            vx: Math.cos(ang) * 70 + (Math.random()-0.5)*50,
+            vy: Math.sin(ang) * 220 + 100,
           });
         }
         SFX.slimeSplat();
@@ -789,9 +892,9 @@
       w: 34, h: 52,
       type, anim: Math.random() * Math.PI * 2,
     };
-    if (type === 'zombie')     { ER.enemies.push({...base, hp:3, relSpeed: -40}); }
-    else if (type === 'ghost') { ER.enemies.push({...base, hp:1, relSpeed:  20, w:30, h:46}); }
-    else                       { ER.enemies.push({...base, hp:2, relSpeed:  80, vx: (Math.random()-0.5)*120}); }
+    if (type === 'zombie')     { ER.enemies.push({...base, hp:5, relSpeed: -50}); }
+    else if (type === 'ghost') { ER.enemies.push({...base, hp:2, relSpeed:  35, w:30, h:46}); }
+    else                       { ER.enemies.push({...base, hp:3, relSpeed: 110, vx: (Math.random()-0.5)*150}); }
   }
 
   function spawnParticles(x, y, n, color) {
@@ -1179,12 +1282,22 @@
     ctx.textAlign = 'right'; ctx.fillStyle = '#7bff3a';
     ctx.fillText(`STG ${ER.stage}/3`, W-12, 25);
 
-    // Stage progress bar
-    const pct = Math.min(1, ER.stageDist / ER.stageLen);
-    ctx.fillStyle = '#111'; ctx.fillRect(W-140, H-28, 128, 10);
-    ctx.fillStyle = '#7bff3a'; ctx.fillRect(W-140, H-28, pct*128, 10);
-    ctx.fillStyle = '#fff'; ctx.font = '6px "Press Start 2P", monospace';
-    ctx.textAlign = 'right'; ctx.fillText('STAGE', W-144, H-20);
+    // Progress bar — shows stage progress OR boss HP during boss fight
+    if (ER.bossPhase && ER.slimer && ER.slimer.alive) {
+      const sl = ER.slimer;
+      const pct = sl.hp / sl.maxHp;
+      ctx.fillStyle = '#111'; ctx.fillRect(W-140, H-28, 128, 10);
+      ctx.fillStyle = sl.phase === 2 ? '#c5ff6b' : '#d1121b';
+      ctx.fillRect(W-140, H-28, pct*128, 10);
+      ctx.fillStyle = '#ffea00'; ctx.font = '6px "Press Start 2P", monospace';
+      ctx.textAlign = 'right'; ctx.fillText('SLIMER HP', W-144, H-20);
+    } else {
+      const pct = Math.min(1, ER.stageDist / ER.stageLen);
+      ctx.fillStyle = '#111'; ctx.fillRect(W-140, H-28, 128, 10);
+      ctx.fillStyle = '#7bff3a'; ctx.fillRect(W-140, H-28, pct*128, 10);
+      ctx.fillStyle = '#fff'; ctx.font = '6px "Press Start 2P", monospace';
+      ctx.textAlign = 'right'; ctx.fillText('STAGE', W-144, H-20);
+    }
 
     // Status effects
     ctx.font = '7px "Press Start 2P", monospace'; ctx.textAlign = 'left';
